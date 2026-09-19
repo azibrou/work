@@ -1,0 +1,473 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #ffffff;
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    height: 200px;
+
+    background: linear-gradient(
+      90deg,
+      #E0F9F6,
+      #E4F4F9,
+      #FDFDFE,
+      #FFFBF0,
+      #FFF5EB,
+      #FFF2E8,
+      #F8F1F7,
+      #F7F5FC,
+      #FFFFFF
+    );
+    background-size: 200% 100%;
+    animation: colorShift 20s ease-in-out infinite alternate;
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+    pointer-events: none; /* не мешает кликам */
+  }
+  @keyframes colorShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+/* Main container */
+.main-container {
+    display: block;
+    width: max-content; /* hug content width */
+    margin: 32px auto; /* center horizontally */
+    padding: 32px; /* no horizontal padding so it truly hugs */
+}
+
+/* Tiles grid */
+.tiles {
+    display: inline-grid; /* shrink-wrap to content width */
+    grid-template-columns: repeat(2, 550px);
+    gap: 8px; /* spacing between tiles and lines */
+    justify-content: center; /* align items within grid columns */
+}
+
+/* Shared tile base */
+.tile {
+    background-color: #F5F7F7;
+    border-radius: 4px;
+    transition: border-radius 150ms ease-in;
+}
+
+.tile:hover {
+    border-radius: 56px;
+    transition: border-radius 150ms ease-out;
+}
+
+/* Tile variations */
+.basic-tile {
+    width: 550px;
+    height: 413px;
+    position: relative; /* allow absolute-positioned details */
+}
+
+.vertical-tile {
+    width: 550px;
+    height: 834px;
+    position: relative; /* allow details to stick to bottom-left */
+}
+
+.landscape-tile {
+    width: 1108px;
+    height: 593px;
+    grid-column: span 2; /* occupy both columns */
+    position: relative; /* allow details positioning */
+}
+
+
+/* Helper for stacking two basics vertically in one column */
+.stack {
+    width: 550px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Text styles */
+.memo {
+    width: 1108px; /* same width as tiles (550 + 8 + 550) */
+    box-sizing: border-box;
+    margin: 0 auto 32px; /* center and add spacing below */
+    padding: 40px 132px 132px 132px;
+    text-align: center;
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 130%;
+    color: #000000;
+}
+
+h1 {
+    font-size: 32px; /* H3 scale */
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+h3 {
+    font-size: 28px; /* H3 scale */
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+a {
+    color: #000000;
+    text-decoration: underline;
+}
+
+p {
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/* Details block for vertical tile */
+.vertical-product-details {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding: 0 80px 40px 40px; /* top right bottom left */
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 2; /* ensure content overlays decorative image */
+}
+
+/* Details block for landscape tile */
+.landscape-product-details {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 50%;
+    box-sizing: border-box;
+    padding: 0 80px 40px 40px; /* top right bottom left */
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+
+/* Basic product details inside basic tiles */
+.basic-product-details {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding: 0 80px 40px 40px; /* top right bottom left */
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.basic-product-details-top{
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 40px 80px 40px 40px; /* top right bottom left */
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+
+
+
+/* Tile designs */
+
+/* Robot delivery */
+.robot-delivery {
+    background: linear-gradient(135deg, #F5F7F7 0%, #F8F7ED 100%);
+    overflow: hidden; /* hide image overflow for zoom */
+}
+
+.robot-delivery .tile-image {
+    position: absolute;
+    right: -30%;
+    top: 40%;
+    transform: translateY(-40%) scale(2);
+    transform-origin: center right;
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+    transition: transform 300ms;
+    transition-timing-function: cubic-bezier(0,0,0.25,1);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.robot-delivery:hover .tile-image {
+    position: absolute;
+    right: -30%;
+    top: 40%;
+    transform: translateY(-35%) scale(2.2);
+}
+
+/* MGH */
+.mgh{
+    background: linear-gradient(to bottom left, #1E060F 0%, #202C5B 100%);
+    overflow: hidden;
+    color: #ffffff;
+}
+
+.mgh a {
+    color: #ffffff;
+}
+
+.mgh .tile-image {
+    position: absolute;
+    transform: translateY(-50%) scale(1);
+    transform-origin: center right;
+    width: auto;
+    object-fit: contain;
+    transition: transform 300ms cubic-bezier(0.075, 1.4, 0.165, 1);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.mgh .aa {
+    top: 30%;
+    right: 5%;
+    rotate: 5deg;
+    height: 30%;
+}
+
+.mgh:hover .aa {
+    transform: translateY(-35%) translateX(30%) scale(1.2) rotate(8deg);
+    transition: transform 500ms ease-out;
+}
+
+.mgh .bb {
+    top: 31%;
+    right: -5%; 
+    rotate: 12deg;
+    height: 43%;   
+}
+
+.mgh:hover .bb {
+    transform: translateY(-50%) translateX(30%) scale(1.2) rotate(-5deg);
+    transition: transform 500ms ease-out;
+}
+
+.mgh .cc {
+    top: 34%;
+    right: -15%;
+    rotate: 10deg; 
+    height: 60%;  
+}
+
+.mgh:hover .cc {
+    transform: translateY(-40%) translateX(23%) scale(1.2) rotate(5deg);
+    transition: transform 500ms ease-out;
+}
+
+.mgh .dd {
+    top: 40%;
+    right: -29%; 
+    rotate: 15deg; 
+    height: 70%; 
+}
+
+.mgh:hover .dd {
+    transform: translateY(-45%) translateX(20%) scale(1.2) rotate(4deg);
+    transition: transform 500ms ease-out;
+}
+
+.mgh .ee {
+    top: 40%;
+    right: -28%;
+    rotate: 15deg;
+    height: 100%;   
+}
+
+.mgh:hover .ee {
+    position: absolute;
+    transform: translateY(-60%) translateX(20%) scale(1.2) rotate(-8deg);
+    transition: transform 500ms ease-out;
+}
+
+
+
+/* Fitbit Rewards */
+.fitbit-rewards {
+    background-color: #FF7E57;
+    transition: 
+        background-color 1000ms ease,
+        border-radius 150ms ease;
+    overflow: hidden; /* hide image overflow for zoom*/
+    color: #ffffff;
+}
+
+.fitbit-rewards:hover {
+    background-color: #F5693F;
+    transition: 
+        background-color 1000ms ease,
+        border-radius 150ms ease;
+}
+
+.fitbit-rewards .basic-product-details {
+    width: 70%;
+}
+
+.fitbit-rewards a {
+    color: #ffffff;
+}
+
+.fitbit-rewards .tile-image {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+    z-index: 1;
+    pointer-events: none;
+}
+
+
+/* Fitbit engagement */
+.fitbit-engagement {
+    background-color: #F8DFDA;
+    overflow: hidden; /* hide image overflow for zoom*/
+    transition: 
+        background-color 3000ms ease,
+        border-radius 150ms ease;
+}
+
+.fitbit-engagement:hover {
+    width: auto;
+    background-color: #FFCAAD;
+    transition: 
+        background-color 3000ms ease,
+        border-radius 150ms ease;
+}
+
+.fitbit-engagement .tile-image {
+    position: absolute;
+    left: 0;
+    bottom: -40px;
+    height: 60%;
+    width: auto;
+    object-fit: contain;
+    z-index: 1;
+    pointer-events: none;
+    transition: transform 2000ms ease-out;
+    transform-origin: bottom left;
+}
+
+.fitbit-engagement:hover .tile-image {
+    transform: translateX(-2000px);
+    transition: transform 25s ease-out;
+}
+
+
+
+
+/* Yandex */
+.yandex {
+    background-color: #E6F0F2;
+    overflow: hidden; /* hide image overflow for zoom*/
+    transition: 
+        background-color 3000ms ease,
+        border-radius 150ms ease;
+}
+
+.yandex:hover {
+    width: auto;
+    background-color: #DFEDF0;
+    transition: 
+        background-color 3000ms ease,
+        border-radius 150ms ease;
+}
+
+.yandex .basic-product-details-top {
+    width: 68%;
+}
+
+.yandex .tile-image {
+    position: absolute;
+    right: -200px;
+    top: -40px;
+    height: 140%;
+    width: auto;
+    object-fit: contain;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.yandex .cover-image {
+    position: absolute;
+    right: 125px;
+    top: 156px;
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+    z-index: 1;
+    pointer-events: none;
+    transition: transform 15000ms ease-out;
+}
+
+.yandex:hover .cover-image {
+    transform: rotate(720deg);
+}
+
+
+/* Grocery revamp */
+.grocery-revamp {
+    background: linear-gradient(
+    180deg,
+    #E6F0EB 0%,
+    #DDEBE4 80%,
+    #D5E6DE 90%,
+    #D8EBE2 100%
+    );
+    overflow: hidden; /* hide image overflow for zoom*/
+}
+
+.grocery-revamp .tile-image1 {
+    position: absolute;
+    right: -16%;
+    top: 3%;
+    height: 100%;
+    object-fit: contain;
+    z-index: 1;
+    pointer-events: none;
+    transition: transform 0.1s ease-out;
+    will-change: transform;
+}
+
+.grocery-revamp .tile-image2 {
+    position: absolute;
+    right: 40%;
+    top: 44%;
+    height: 60%;
+    object-fit: contain;
+    z-index: 1;
+    pointer-events: none;
+    transition: transform 0.1s ease-out;
+    will-change: transform;
+}
+
+.grocery-revamp .landscape-product-details-center {
+    position: absolute;
+    left: 0;
+    top: 40px;
+    width: 50%;
+    box-sizing: border-box;
+    padding: 0 80px 40px 40px; /* top right bottom left */
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
