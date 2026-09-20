@@ -19,6 +19,16 @@
       "label": "Slow",
       "duration": 500,
       "easing": "ease-out"
+    },
+    "homecardin": {
+      "label": "Home-card in",
+      "duration": 1600,
+      "easing": "ease-out"
+    },
+    "homecardout": {
+      "label": "Home-card-out",
+      "duration": 500,
+      "easing": "ease-out"
     }
   }
 }
