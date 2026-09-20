@@ -135,8 +135,8 @@
     "buttonOpacity": 100,
     "background": "#e6f0f2",
     "backgroundEnd": "#e6f0f2",
-    "hoverBackground": "#dfedf0",
-    "hoverBackgroundEnd": "#dfedf0",
+    "hoverBackground": "#b5dee8",
+    "hoverBackgroundEnd": "#b5dee8",
     "gradientAngle": 180
   },
   "groceryRevamp": {

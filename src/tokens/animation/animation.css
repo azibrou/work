@@ -11,7 +11,7 @@
   --duration-slow: 500ms;
   --easing-slow: cubic-bezier(0, 0, 0.2, 1);
 
-  --duration-homecardin: 1600ms;
+  --duration-homecardin: 1200ms;
   --easing-homecardin: cubic-bezier(0, 0, 0.2, 1);
 
   --duration-homecardout: 150ms;

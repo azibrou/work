@@ -22,7 +22,7 @@
     },
     "homecardin": {
       "label": "Home-card in",
-      "duration": 1600,
+      "duration": 1200,
       "easing": "ease-out"
     },
     "homecardout": {
