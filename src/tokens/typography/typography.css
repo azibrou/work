@@ -1,15 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif:wght@400;500;600;700&family=Bricolage+Grotesque:wght@400;500;600;700&display=swap');
 
 :root {
   --font-family-base: 'Inter', sans-serif;
+  --font-family-serif: 'Noto Serif', serif;
+  --font-family-bricolage: 'Bricolage Grotesque', sans-serif;
 
   --font-size-h1: 48px;
   --line-height-h1: 56px;
-  --font-weight-h1: 700;
+  --font-weight-h1: 600;
 
   --font-size-h2: 40px;
   --line-height-h2: 48px;
-  --font-weight-h2: 700;
+  --font-weight-h2: 600;
 
   --font-size-h3: 32px;
   --line-height-h3: 40px;
@@ -17,15 +19,15 @@
 
   --font-size-h4: 28px;
   --line-height-h4: 36px;
-  --font-weight-h4: 600;
+  --font-weight-h4: 700;
 
   --font-size-h5: 24px;
   --line-height-h5: 32px;
-  --font-weight-h5: 600;
+  --font-weight-h5: 700;
 
   --font-size-h6: 20px;
   --line-height-h6: 28px;
-  --font-weight-h6: 600;
+  --font-weight-h6: 700;
 
   --font-size-body-s: 14px;
   --line-height-body-s: 20px;

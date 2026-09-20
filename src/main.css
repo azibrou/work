@@ -76,6 +76,34 @@ body::before {
     gap: 8px;
 }
 
+/* Top menu */
+.top-menu {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.top-menu-item {
+    font: inherit;
+    font-size: 16px;
+    font-weight: 500;
+    color: #666;
+    background: none;
+    border: 0;
+    border-radius: 999px;
+    padding: 6px 16px;
+    cursor: pointer;
+}
+
+.top-menu-item:hover {
+    color: #000;
+}
+
+.top-menu-item.is-active {
+    color: #000;
+    background: rgba(0, 0, 0, 0.06);
+}
+
 /* Text styles */
 .memo {
     width: 100%; /* same width as the tiles grid */

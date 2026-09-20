@@ -2,6 +2,7 @@
 // validation of a card's config, and the background helper. Keep free of node/browser APIs.
 import { normalizeHex } from '../../tokens/generate.js';
 
+export const FONT_FAMILIES = ['inter', 'noto-serif', 'bricolage-grotesque'];
 export const HEADLINE_TYPES = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
 export const DESCRIPTION_SIZES = ['s', 'm', 'l'];
 export const TEXT_POSITIONS = ['top', 'center', 'bottom'];
@@ -31,6 +32,7 @@ export function validateCard(c) {
   if (logo !== null && !LOGO_FILE.test(logo)) fail('logo has an invalid file name');
 
   return {
+    fontFamily: oneOf(c.fontFamily, FONT_FAMILIES, 'Font'),
     title: text(c.title, 'Headline'),
     headlineType: oneOf(c.headlineType, HEADLINE_TYPES, 'Headline type'),
     description: text(c.description, 'Description'),
@@ -46,6 +48,8 @@ export function validateCard(c) {
     padding: int(c.padding, 0, 500, 'Padding'),
     radius: int(c.radius, 0, 500, 'Radius'),
     hoverRadius: int(c.hoverRadius, 0, 500, 'Hover radius'),
+    buttonRadius: int(c.buttonRadius, 0, 500, 'Button radius'),
+    buttonHoverRadius: int(c.buttonHoverRadius, 0, 50, 'Button hover radius'),
     background: color(c.background, 'Background'),
     backgroundEnd: color(c.backgroundEnd, 'Background end'),
     hoverBackground: color(c.hoverBackground, 'Hover background'),

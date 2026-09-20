@@ -8,6 +8,12 @@ import { HEADLINE_TYPES, DESCRIPTION_SIZES, TEXT_POSITIONS, TEXT_ALIGNS, TEXT_CO
 const MAX_LOGO_BYTES = 1.5 * 1024 * 1024;
 const LOGO_TYPES = ['image/svg+xml', 'image/png', 'image/jpeg', 'image/webp'];
 
+const FONT_OPTIONS = [
+  { value: 'inter', label: 'Inter' },
+  { value: 'noto-serif', label: 'Noto Serif' },
+  { value: 'bricolage-grotesque', label: 'Bricolage Grotesque' },
+];
+
 const options = (values, labels = {}) => values.map((v) => ({ value: v, label: labels[v] ?? v.toUpperCase() }));
 const capitalized = Object.fromEntries(
   [...TEXT_POSITIONS, ...TEXT_ALIGNS].map((v) => [v, v[0].toUpperCase() + v.slice(1)]),
@@ -79,6 +85,7 @@ function CardSetup({ cardId, Card }) {
           <Section title="Text block">
             <TextField label="Headline" value={data.title} onChange={set('title')} />
             <Row>
+              <SelectField label="Font" value={data.fontFamily} onChange={set('fontFamily')} options={FONT_OPTIONS} />
               <SelectField label="Headline type" value={data.headlineType} onChange={set('headlineType')} options={options(HEADLINE_TYPES)} />
               <SelectField
                 label="Description size"
@@ -125,6 +132,7 @@ function CardSetup({ cardId, Card }) {
           <Section title="Default state">
             <Row>
               <NumberField label="Radius" value={data.radius} onChange={set('radius')} min={0} max={500} />
+              <NumberField label="Button radius" value={data.buttonRadius} onChange={set('buttonRadius')} min={0} max={500} />
               <NumberField label="Gradient angle" value={data.gradientAngle} onChange={set('gradientAngle')} min={0} max={360} suffix="deg" />
             </Row>
             <Row>
@@ -137,6 +145,7 @@ function CardSetup({ cardId, Card }) {
           <Section title="Hover state">
             <Row>
               <NumberField label="Radius" value={data.hoverRadius} onChange={set('hoverRadius')} min={0} max={500} />
+              <NumberField label="Button radius" value={data.buttonHoverRadius} onChange={set('buttonHoverRadius')} min={0} max={50} suffix="%" />
             </Row>
             <Row>
               <ColorField label="Background" value={data.hoverBackground} onChange={set('hoverBackground')} />

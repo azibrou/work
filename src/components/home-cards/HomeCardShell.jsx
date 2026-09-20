@@ -1,13 +1,20 @@
 import './home-cards.css';
 import { resolveLogo } from './logos';
 import { toBackground } from './cardSchema';
+import Button from '../button/Button';
 
 const JUSTIFY = { top: 'flex-start', center: 'center', bottom: 'flex-end' };
 const ALIGN = { left: 'flex-start', center: 'center', right: 'flex-end' };
+const FONT = {
+  inter: 'var(--font-family-base)',
+  'noto-serif': 'var(--font-family-serif)',
+  'bricolage-grotesque': 'var(--font-family-bricolage)',
+};
 
 export default function HomeCardShell({
   variant,
   bgDuration,
+  fontFamily = 'inter',
   title,
   headlineType,
   description,
@@ -24,6 +31,8 @@ export default function HomeCardShell({
   padding,
   radius,
   hoverRadius,
+  buttonRadius = 12,
+  buttonHoverRadius = 50,
   background,
   backgroundEnd,
   hoverBackground,
@@ -50,11 +59,11 @@ export default function HomeCardShell({
       {children}
       <div
         className="home-card__details"
-        style={{ padding, justifyContent: JUSTIFY[textPosition] }}
+        style={{ padding }}
       >
         <div
           className="home-card__text"
-          style={{ width: textWidth, textAlign, alignItems: ALIGN[textAlign] }}
+          style={{ width: textWidth, justifyContent: JUSTIFY[textPosition], textAlign, alignItems: ALIGN[textAlign], fontFamily: FONT[fontFamily] }}
         >
           {logoSrc && <img src={logoSrc} alt={`${title} logo`} width={logoSize} height={logoSize} style={{ objectFit: 'contain' }} />}
           <Headline
@@ -75,17 +84,14 @@ export default function HomeCardShell({
           >
             {description}
           </p>
-          <a
-            className="home-card__link"
-            href="#"
-            style={{
-              fontSize: `var(--font-size-body-${descriptionSize})`,
-              lineHeight: `var(--line-height-body-${descriptionSize})`,
-            }}
-          >
-            View case study
-          </a>
         </div>
+        <Button
+          size={descriptionSize}
+          radius={buttonRadius}
+          hoverRadius={buttonHoverRadius}
+          className="home-card__button"
+          style={{ alignSelf: ALIGN[textAlign], fontFamily: FONT[fontFamily] }}
+        />
       </div>
     </div>
   );

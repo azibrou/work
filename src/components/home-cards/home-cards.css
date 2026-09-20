@@ -37,13 +37,22 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  flex: 1;
+  min-height: 0;
   max-width: 100%;
   pointer-events: auto;
 }
 
-.home-card__link {
-  color: inherit;
-  text-decoration: underline;
+.home-card__button {
+  flex: none;
+  margin-top: 24px;
+  pointer-events: auto;
+}
+
+/* Hovering anywhere on the card morphs the button too. */
+.home-card:hover .home-card__button {
+  border-radius: calc(var(--button-radius-hover) / 100 * (var(--button-height)));
+  transition: border-radius var(--duration-homecardin) var(--easing-homecardin);
 }
 
 .home-card__image {
@@ -68,37 +77,93 @@
   transform: translateY(-35%) scale(2.2);
 }
 
-/* MGH — morphing blob field.
-   The blob shapes are morphed by SVG <animate> inside the markup; this rule
-   only owns the hover zoom, so the two animations stack instead of clashing.
-   The card's own overflow: hidden + border-radius keep the zoom clipped to the
-   rounded corners. */
-.home-card--mgh .home-card__blobs {
+/* MGH — the exported blob artwork, one inline <svg> per layer.
+   Shape morphing is driven by SVG <animate> in the markup; these rules only
+   own placement, so the two animations stack instead of clashing. Idle sits
+   further left, hover pushes the stack right and scales it up. The card's own
+   overflow: hidden + border-radius keep it clipped to the rounded corners. */
+.home-card--mgh .home-card__blob {
   position: absolute;
-  inset: 0;
   z-index: 0;
-  width: 100%;
-  height: 100%;
+  width: auto;
   pointer-events: none;
-  transform: scale(1);
-  transform-origin: center;
+  /* Morph keyframes swing outside each layer's source viewBox, and an <svg>
+     clips to its viewport by default — without this the outline shears off
+     against a flat edge mid-morph. The card still clips to its own corners. */
+  overflow: visible;
+  transform: translateY(-50%) scale(1);
+  transform-origin: center right;
   will-change: transform;
-  transition: transform 1100ms ease-out;
+  transition: transform var(--duration-medium) cubic-bezier(0.075, 1.4, 0.165, 1);
 }
 
-.home-card--mgh:hover .home-card__blobs {
-  transform: scale(1.1);
+.home-card--mgh:hover .home-card__blob {
+  transition: transform var(--duration-slow) var(--easing-slow);
 }
 
-/* Text sits in its own layer above the background and is never zoomed. */
+/* Text keeps its own layer above the artwork and never moves with it. */
 .home-card--mgh .home-card__details {
   z-index: 1;
 }
 
+.home-card--mgh .home-card__blob--a {
+  top: 30%;
+  right: 5%;
+  rotate: 5deg;
+  height: 30%;
+}
+
+.home-card--mgh:hover .home-card__blob--a {
+  transform: translateY(-35%) translateX(30%) scale(1.2) rotate(8deg);
+}
+
+.home-card--mgh .home-card__blob--b {
+  top: 31%;
+  right: -5%;
+  rotate: 12deg;
+  height: 43%;
+}
+
+.home-card--mgh:hover .home-card__blob--b {
+  transform: translateY(-50%) translateX(30%) scale(1.2) rotate(-5deg);
+}
+
+.home-card--mgh .home-card__blob--c {
+  top: 34%;
+  right: -15%;
+  rotate: 10deg;
+  height: 60%;
+}
+
+.home-card--mgh:hover .home-card__blob--c {
+  transform: translateY(-40%) translateX(23%) scale(1.2) rotate(5deg);
+}
+
+.home-card--mgh .home-card__blob--d {
+  top: 40%;
+  right: -29%;
+  rotate: 15deg;
+  height: 70%;
+}
+
+.home-card--mgh:hover .home-card__blob--d {
+  transform: translateY(-45%) translateX(20%) scale(1.2) rotate(4deg);
+}
+
+.home-card--mgh .home-card__blob--e {
+  top: 40%;
+  right: -28%;
+  rotate: 15deg;
+  height: 100%;
+}
+
+.home-card--mgh:hover .home-card__blob--e {
+  transform: translateY(-60%) translateX(20%) scale(1.2) rotate(-8deg);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .home-card--mgh .home-card__blobs,
-  .home-card--mgh:hover .home-card__blobs {
-    transform: none;
+  .home-card--mgh .home-card__blob,
+  .home-card--mgh:hover .home-card__blob {
     transition: none;
   }
 }

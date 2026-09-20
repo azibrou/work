@@ -1,7 +1,5 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { categories, generateCss } from '../src/tokens/generate.js';
-import { validateCard } from '../src/components/home-cards/cardSchema.js';
 
 const tokensDir = path.resolve(import.meta.dirname, '../src/tokens');
 const cardsFile = path.resolve(import.meta.dirname, '../src/components/home-cards/cards.json');
@@ -36,6 +34,11 @@ function send(res, status, payload) {
   res.end(JSON.stringify(payload));
 }
 
+// Loaded through Vite on every request so edits to the schema or generators apply without restarting Storybook.
+function loadFresh(server, file) {
+  return server.ssrLoadModule(file);
+}
+
 function postRoute(server, route, maxBody, handler) {
   server.middlewares.use(route, async (req, res) => {
     if (req.method !== 'POST') return send(res, 405, { error: 'POST only' });
@@ -46,14 +49,15 @@ function postRoute(server, route, maxBody, handler) {
     }
 
     try {
-      send(res, 200, await handler(JSON.parse(await readBody(req, maxBody))));
+      send(res, 200, await handler(JSON.parse(await readBody(req, maxBody)), server));
     } catch (error) {
       send(res, 400, { error: error.message });
     }
   });
 }
 
-async function saveTokens({ category, data }) {
+async function saveTokens({ category, data }, server) {
+  const { categories, generateCss } = await loadFresh(server, '/src/tokens/generate.js');
   const css = generateCss(category, data);
   const target = categories[category];
   await fs.writeFile(path.join(tokensDir, target.json), JSON.stringify(data, null, 2) + '\n');
@@ -75,11 +79,14 @@ async function writeLogo(cardId, dataUrl) {
   return fileName;
 }
 
-async function saveCard({ cardId, config, logoUpload }) {
+async function saveCard({ cardId, config, logoUpload }, server) {
+  const { validateCard } = await loadFresh(server, '/src/components/home-cards/cardSchema.js');
   const cards = JSON.parse(await fs.readFile(cardsFile, 'utf8'));
   if (!Object.hasOwn(cards, cardId)) throw new Error(`Unknown card "${cardId}"`);
 
   const clean = validateCard(config);
+  const dropped = Object.keys(config).filter((key) => !(key in clean));
+  if (dropped.length) throw new Error(`Unknown setting(s) would be lost: ${dropped.join(', ')}`);
   if (logoUpload) {
     clean.logo = await writeLogo(cardId, logoUpload.dataUrl);
   } else if (clean.logo) {

@@ -8,13 +8,13 @@
       "label": "H1",
       "fontSize": 48,
       "lineHeight": 56,
-      "fontWeight": 700
+      "fontWeight": 600
     },
     "h2": {
       "label": "H2",
       "fontSize": 40,
       "lineHeight": 48,
-      "fontWeight": 700
+      "fontWeight": 600
     },
     "h3": {
       "label": "H3",
@@ -26,19 +26,19 @@
       "label": "H4",
       "fontSize": 28,
       "lineHeight": 36,
-      "fontWeight": 600
+      "fontWeight": 700
     },
     "h5": {
       "label": "H5",
       "fontSize": 24,
       "lineHeight": 32,
-      "fontWeight": 600
+      "fontWeight": 700
     },
     "h6": {
       "label": "H6",
       "fontSize": 20,
       "lineHeight": 28,
-      "fontWeight": 600
+      "fontWeight": 700
     }
   },
   "body": {

@@ -27,7 +27,7 @@
     },
     "homecardout": {
       "label": "Home-card-out",
-      "duration": 500,
+      "duration": 150,
       "easing": "ease-out"
     }
   }

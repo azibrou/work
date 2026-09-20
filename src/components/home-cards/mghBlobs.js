@@ -1,75 +1,216 @@
-// Palette for the MGH card background: dark indigo/plum at the corners,
-// warm ember and peach through the middle, teal in the bottom-right.
-export const BLOB_COLORS = {
-  plum: '#1e060f',
-  indigo: '#202c5b',
-  violet: '#533096',
-  violetDeep: '#211343',
-  ember: '#b8435c',
-  emberDeep: '#6b2b7d',
-  peach: '#ff8a52',
-  peachDeep: '#d4514f',
-  core: '#ffd7a1',
-  coreDeep: '#ff9a5c',
-  teal: '#3fd2b0',
-  tealDeep: '#10706f',
-};
-
-// Each layer morphs through four `d` keyframes (the last repeats the first so
-// the loop closes seamlessly). All keyframes of a layer share the same segment
-// count — SVG <animate> can only interpolate `d` between identical structures.
-// Durations are deliberately coprime-ish so the layers drift out of phase.
+// The five MGH blobs, taken verbatim from src/images/mgh01..05.svg — same
+// paths, same gradients, same opacities, so the card renders exactly like the
+// exported artwork. Each file was cropped to its own bounding box, so every
+// layer keeps its own viewBox and its gradient stays in that user space.
+//
+// `path` is the artwork outline at rest. The morph is generated per frame from
+// it rather than tweened between fixed keyframes, so the motion never lands
+// back on a start shape and never repeats a cycle.
 export const BLOB_LAYERS = [
   {
-    id: 'violet',
-    from: BLOB_COLORS.violet,
-    to: BLOB_COLORS.violetDeep,
+    id: 'e',
+    width: 745,
+    height: 798,
+    opacity: 0.1,
     duration: 15,
-    opacity: 1,
-    values:
-      'M590.7 548.4C566.3 653 509.2 763.8 444.7 825.3C380.2 886.8 281.1 929.7 203.7 917.5C126.2 905.3 39.8 833.6 -19.8 752C-79.5 670.5 -151.4 537.8 -154.3 428C-157.2 318.2 -93.6 165.5 -37.1 93.2C19.4 20.9 109.3 18.2 184.5 -5.6C259.7 -29.5 346.4 -84.1 414.2 -50.2C482 -16.3 561.9 98 591.3 197.8C620.8 297.6 615.2 443.9 590.7 548.4Z;M655.8 576.8C646.4 677.6 531.9 782.7 455.7 849.4C379.4 916 281.4 988.2 198.3 977C115.3 965.8 2.6 874.4 -42.8 782C-88.1 689.5 -76.9 534.9 -73.8 422.4C-70.7 309.9 -66.4 183.6 -24.2 107C18 30.3 111.9 -26.7 179.3 -37.6C246.8 -48.5 325.1 -5.2 380.6 41.8C436.2 88.8 466.7 155.3 512.5 244.5C558.4 333.6 665.3 476 655.8 576.8Z;M566.8 538C528.6 634.9 470.9 688.6 410.5 750.6C350.1 812.6 275.4 910.8 204.3 910.2C133.3 909.6 33.5 828 -15.8 746.9C-65.2 665.8 -86.7 534 -91.6 423.6C-96.5 313.3 -87.2 179.9 -45 84.8C-2.8 -10.4 83.2 -119.8 161.6 -147.5C240 -175.1 345.8 -133.9 425.5 -81.2C505.2 -28.4 616.2 65.9 639.7 169.1C663.3 272.3 605 441.1 566.8 538Z;M590.7 548.4C566.3 653 509.2 763.8 444.7 825.3C380.2 886.8 281.1 929.7 203.7 917.5C126.2 905.3 39.8 833.6 -19.8 752C-79.5 670.5 -151.4 537.8 -154.3 428C-157.2 318.2 -93.6 165.5 -37.1 93.2C19.4 20.9 109.3 18.2 184.5 -5.6C259.7 -29.5 346.4 -84.1 414.2 -50.2C482 -16.3 561.9 98 591.3 197.8C620.8 297.6 615.2 443.9 590.7 548.4Z',
+    gradient: { x1: 127.311, y1: 179.702, x2: 686.264, y2: 737.153 },
+    stops: [
+      { color: '#FFFF85', opacity: 1 },
+      { color: '#3769FF', opacity: 1 },
+    ],
+    path:
+      'M389.269 786.244C476.552 797.458 526.453 803.73 580.706 786.244C693.356 749.938 699.377 574.168 735.713 430.225C766.954 306.463 710.364 206.18 691.455 127.347C673.245 51.4303 515.098 -33.422 400.649 14.9785C286.201 63.3791 279.007 73.916 169.832 104.213C60.6569 134.509 27.8189 229.573 27.8189 324.543C27.8189 397.449 -54.2127 590.51 65.3437 648.43C117.673 673.78 202.315 686.571 254.518 708.988C321.583 737.786 327.453 778.302 389.269 786.244Z',
   },
   {
-    id: 'ember',
-    from: BLOB_COLORS.ember,
-    to: BLOB_COLORS.emberDeep,
-    duration: 12,
-    opacity: 0.95,
-    values:
-      'M455.9 749.4C403.4 771.5 329.7 742.8 278.3 721.1C226.8 699.3 179.7 665.7 147.1 618.8C114.5 571.8 92.6 511.7 82.6 439.4C72.6 367.2 51.1 233.3 87.1 185.3C123.1 137.3 234.6 150.1 298.8 151.7C363 153.3 429 158.2 472.1 195C515.2 231.7 537.3 306.8 557.6 372.4C577.8 437.9 610.6 525.5 593.7 588.3C576.8 651.2 508.5 727.3 455.9 749.4Z;M456.1 749.7C394.9 789.6 307.6 862.5 254.8 841.9C202 821.2 183 693.8 139.3 625.8C95.6 557.8 0.1 505.7 -7.3 433.8C-14.7 361.8 45.8 258.3 95 194.1C144.3 129.8 220.8 56.5 288.2 48.3C355.6 40.1 453.1 91.3 499.5 144.8C546 198.2 546.4 292.7 566.8 369C587.2 445.3 640.4 539.2 622 602.6C603.5 666.1 517.3 709.8 456.1 749.7Z;M489.8 828.5C426.6 858.5 324.2 825.9 264.2 793.6C204.1 761.3 164.7 694.1 129.3 634.8C93.9 575.4 51.1 504.1 51.6 437.5C52 370.9 91.3 287.7 132 235.2C172.7 182.6 232.8 140.4 295.8 122.2C358.8 103.9 455.1 88 510 125.6C564.9 163.2 602.8 266.5 625.1 347.8C647.3 429.2 666 533.4 643.5 613.5C620.9 693.6 553 798.5 489.8 828.5Z;M455.9 749.4C403.4 771.5 329.7 742.8 278.3 721.1C226.8 699.3 179.7 665.7 147.1 618.8C114.5 571.8 92.6 511.7 82.6 439.4C72.6 367.2 51.1 233.3 87.1 185.3C123.1 137.3 234.6 150.1 298.8 151.7C363 153.3 429 158.2 472.1 195C515.2 231.7 537.3 306.8 557.6 372.4C577.8 437.9 610.6 525.5 593.7 588.3C576.8 651.2 508.5 727.3 455.9 749.4Z',
-  },
-  {
-    id: 'peach',
-    from: BLOB_COLORS.peach,
-    to: BLOB_COLORS.peachDeep,
-    duration: 11,
-    opacity: 0.95,
-    values:
-      'M179.2 750.6C140.9 720.3 135.6 627.2 119.7 571.9C103.8 516.6 71.9 459.7 83.8 418.7C95.8 377.7 155.7 347.1 191.4 325.8C227.1 304.5 255.6 297 298 290.9C340.4 284.8 421.4 260.5 445.8 289C470.2 317.6 449 412.6 444.4 462.3C439.8 512.1 434.1 539.1 418.3 587.6C402.5 636.1 389.2 726.4 349.4 753.5C309.6 780.7 217.5 780.9 179.2 750.6Z;M203.9 687.5C163.8 672.7 118 635 90.8 588C63.6 541 27.8 455.7 40.7 405.5C53.5 355.3 123.7 322.7 167.7 286.8C211.7 250.9 261 187 304.9 190.2C348.8 193.5 393.8 262.6 431.2 306.3C468.6 350.1 526.3 401.9 529.2 452.9C532.2 503.9 481.9 575 448.9 612.3C415.9 649.7 372.2 664.4 331.4 677C290.5 689.5 244 702.4 203.9 687.5Z;M207.4 678.4C165.1 652.6 116.3 631.2 92.7 586.9C69.1 542.7 50.1 458.3 65.6 413.1C81 368 145.6 352.9 185.4 316C225.3 279.2 261.8 196.1 304.7 192.2C347.7 188.2 405.2 249.1 442.9 292.5C480.6 335.9 522.6 393.7 530.8 452.8C538.9 511.8 522.3 598.7 491.7 646.9C461 695.1 394 736.7 346.7 742C299.3 747.2 249.8 704.3 207.4 678.4Z;M179.2 750.6C140.9 720.3 135.6 627.2 119.7 571.9C103.8 516.6 71.9 459.7 83.8 418.7C95.8 377.7 155.7 347.1 191.4 325.8C227.1 304.5 255.6 297 298 290.9C340.4 284.8 421.4 260.5 445.8 289C470.2 317.6 449 412.6 444.4 462.3C439.8 512.1 434.1 539.1 418.3 587.6C402.5 636.1 389.2 726.4 349.4 753.5C309.6 780.7 217.5 780.9 179.2 750.6Z',
-  },
-  {
-    id: 'core',
-    from: BLOB_COLORS.core,
-    to: BLOB_COLORS.coreDeep,
-    duration: 9,
-    opacity: 0.9,
-    values:
-      'M407.4 549.2C394.8 568.1 353.5 564.6 327.3 568.7C301.1 572.7 271.8 584.6 250.1 573.5C228.4 562.4 206.6 529.9 197 501.9C187.4 473.9 182.4 431.2 192.3 405.5C202.2 379.9 234 358.3 256.5 348.2C279 338 304.6 339.9 327.1 344.7C349.6 349.5 378.9 358.3 391.6 376.7C404.2 395.2 400.4 426.5 403.1 455.2C405.7 483.9 420 530.2 407.4 549.2Z;M398.2 540.3C378 560.8 351.2 576.8 328.7 578.1C306.2 579.4 280 562.8 263 548.1C245.9 533.3 234.9 512.1 226.4 489.7C217.9 467.3 205.1 434.1 211.8 413.7C218.4 393.4 246.3 383.9 266.2 367.6C286.2 351.3 309.1 315.7 331.6 315.6C354.2 315.6 381.7 344 401.4 367.3C421.2 390.5 450.6 426.5 450 455.3C449.5 484.1 418.5 519.8 398.2 540.3Z;M415.1 556.6C396.2 578.1 355.6 584.8 329.7 584.4C303.8 584.1 284.2 567.4 259.6 554.7C235.1 541.9 187.5 530.2 182.5 507.9C177.5 485.7 218.3 449.8 229.6 421.2C241 392.6 233.7 353.3 250.6 336.4C267.5 319.5 305.2 315.3 331 319.8C356.7 324.4 386.5 341.2 405.1 363.8C423.7 386.3 440.9 423.1 442.6 455.3C444.2 487.4 433.9 535 415.1 556.6Z;M407.4 549.2C394.8 568.1 353.5 564.6 327.3 568.7C301.1 572.7 271.8 584.6 250.1 573.5C228.4 562.4 206.6 529.9 197 501.9C187.4 473.9 182.4 431.2 192.3 405.5C202.2 379.9 234 358.3 256.5 348.2C279 338 304.6 339.9 327.1 344.7C349.6 349.5 378.9 358.3 391.6 376.7C404.2 395.2 400.4 426.5 403.1 455.2C405.7 483.9 420 530.2 407.4 549.2Z',
-  },
-  {
-    id: 'teal',
-    from: BLOB_COLORS.teal,
-    to: BLOB_COLORS.tealDeep,
+    id: 'd',
+    width: 557,
+    height: 531,
+    opacity: 0.2,
     duration: 13,
-    opacity: 0.92,
-    values:
-      'M511.4 1065.4C447.7 1068.3 363.9 1048.9 309.5 1012C255.1 975.1 195.2 904.4 185 844C174.7 783.6 204.4 689.8 248.1 649.6C291.8 609.4 386.3 612.6 447.1 602.7C507.9 592.8 556.9 578.5 613 590.2C669 601.9 753.3 629.2 783.5 672.7C813.6 716.1 809.5 797.2 794.2 850.8C778.8 904.4 738.5 958.5 691.3 994.3C644.2 1030.1 575 1062.4 511.4 1065.4Z;M510.6 1087.6C444.3 1092.3 347.4 1066.3 296.3 1025.3C245.3 984.2 200 897.1 204.4 841.4C208.8 785.7 282.6 731.1 322.9 691C363.2 650.8 393.9 626.6 446.3 600.6C498.7 574.5 583.9 521.6 637.5 534.9C691.1 548.2 735.1 626.5 767.7 680.3C800.2 734.2 845.2 805.1 833 858C820.7 910.8 747.9 959.3 694.2 997.6C640.5 1035.8 576.9 1083 510.6 1087.6Z;M511.3 1068.4C448.5 1060.4 396.8 1015.7 343.1 978.2C289.5 940.7 199.1 894.9 189.2 843.4C179.4 791.9 242.6 714.3 283.8 669.4C325 624.4 376 598.9 436.3 573.5C496.6 548.1 589 499.7 645.5 516.9C701.9 534.1 744.7 620 775.1 676.7C805.6 733.4 837.4 798.8 828.2 857.1C818.9 915.4 772.4 991.1 719.6 1026.3C666.8 1061.6 574 1076.4 511.3 1068.4Z;M511.4 1065.4C447.7 1068.3 363.9 1048.9 309.5 1012C255.1 975.1 195.2 904.4 185 844C174.7 783.6 204.4 689.8 248.1 649.6C291.8 609.4 386.3 612.6 447.1 602.7C507.9 592.8 556.9 578.5 613 590.2C669 601.9 753.3 629.2 783.5 672.7C813.6 716.1 809.5 797.2 794.2 850.8C778.8 904.4 738.5 958.5 691.3 994.3C644.2 1030.1 575 1062.4 511.4 1065.4Z',
+    gradient: { x1: 57.3999, y1: 83.5623, x2: 444.517, y2: 532.266 },
+    stops: [
+      { color: '#FFD47E', opacity: 1 },
+      { color: '#39C4FF', opacity: 1 },
+    ],
+    path:
+      'M197.203 497.779C271.439 522.632 416.158 570.101 494.378 468.783C523.339 431.27 523.886 390.289 544.308 330.399C583.59 215.198 517.054 174.757 494.378 128.115C471.137 80.311 454.054 32.8674 413.796 13.6646C367.661 -8.34085 297.775 1.86232 244.599 13.6646C199.819 23.6031 151.702 52.7882 120.594 60.1604C31.7766 81.2094 59.2215 157.529 6.04832 265.296C-15.1565 308.271 28.3257 350.452 34.6424 414.934C39.4128 463.631 122.968 472.925 197.203 497.779Z',
+  },
+  {
+    id: 'c',
+    width: 363,
+    height: 414,
+    opacity: 0.3,
+    duration: 11,
+    gradient: { x1: 34.2645, y1: 67.475, x2: 363.935, y2: 298.951 },
+    stops: [
+      { color: '#FFBB6C', opacity: 1 },
+      { color: '#53E5FF', opacity: 1 },
+    ],
+    path:
+      'M238.659 413.352C298.361 413.352 377.799 323.959 359.68 261.255C347.744 219.946 363.33 159.936 319.973 128.019C227.261 59.7714 278.298 -27.1412 168.74 8.39483C123.227 23.1574 91.6763 43.4047 62.6944 54.4796C-3.9924 79.9626 21.5065 145.752 4.88055 221.606C-1.64716 251.388 -2.44491 282.807 20.4568 298.877C52.8507 321.607 117.437 324.979 148.543 347.806C183.761 373.65 201.532 413.352 238.659 413.352Z',
+  },
+  {
+    id: 'b',
+    width: 263,
+    height: 286,
+    opacity: 0.5,
+    duration: 12,
+    gradient: { x1: 24.896, y1: 41.7885, x2: 245.729, y2: 244.821 },
+    stops: [
+      { color: '#F97D3B', opacity: 1 },
+      { color: '#84FFDF', opacity: 1 },
+    ],
+    path:
+      'M92.0155 266.627C141.467 264.556 208.282 299.169 219.089 279.228C239.566 241.442 269.444 241.442 261.672 213.805C253.9 186.169 223.109 182.288 204.689 115.3C186.268 48.3118 162.849 -4.96616 114.471 1.46896C84.4975 5.45597 34.6202 17.6335 15.6202 44.6186C-6.54539 76.0995 20.0906 128.232 6.02272 155.758C-15.9416 198.733 32.837 216.579 48.7397 230.318C65.0975 244.45 56.6908 268.106 92.0155 266.627Z',
+  },
+  {
+    id: 'a',
+    width: 176,
+    height: 212,
+    opacity: 0.9,
+    duration: 9,
+    gradient: { x1: 10.7578, y1: 19.4067, x2: 208.332, y2: 213.867 },
+    stops: [
+      { color: '#FF633F', opacity: 1 },
+      { color: '#FDF5B7', opacity: 0.9 },
+    ],
+    path:
+      'M86.127 206.144C93.736 208.754 111.659 202.687 126.503 204.669C141.162 206.626 157.763 214.405 168.308 210.382C173.118 208.547 178.862 193.061 172.658 190.019C166.454 186.976 160.847 176.708 157.763 172.727C148.608 160.906 126.32 157.266 119.543 149.615C106.099 134.439 100.821 113.369 105.075 86.5108C107.368 72.0309 113.1 35.8457 97.6628 33.4007C81.4477 30.8325 75.7186 4.38804 52.0461 0.638675C19.0081 -4.59402 7.97749 26.8031 4.76929 50.6855C-0.122417 87.1004 -4.99538 113.087 11.5456 132.51C41.0055 167.104 46.7058 192.62 86.127 206.144Z',
   },
 ];
 
-export const BLOB_VIEW_BOX = '0 0 550 834';
+// Each outline is `M x y` followed by cubic `C` segments and a closing `Z`, so
+// the geometry splits cleanly into anchors (where the curve passes through) and
+// the two control points that shape the curve between each pair of anchors.
+// The morph needs them apart: moving an anchor slides a bend, while stretching
+// its handles changes how sharply that bend turns.
+export function parseBlobPath(d) {
+  const nums = d.match(/-?\d*\.?\d+(?:e[-+]?\d+)?/gi).map(Number);
+  const anchors = [[nums[0], nums[1]]];
+  const segments = [];
 
-// Four keyframes -> three intervals, each eased in and out so the morph never
-// snaps to a linear segment at the keyframe boundaries.
-export const BLOB_KEY_TIMES = '0;0.333;0.666;1';
-export const BLOB_KEY_SPLINES = '0.45 0 0.55 1;0.45 0 0.55 1;0.45 0 0.55 1';
+  for (let i = 2; i + 5 < nums.length; i += 6) {
+    segments.push([
+      [nums[i], nums[i + 1]],
+      [nums[i + 2], nums[i + 3]],
+    ]);
+    anchors.push([nums[i + 4], nums[i + 5]]);
+  }
+  // The closing curve lands back on the opening anchor; keep a single copy.
+  anchors.pop();
+
+  let sx = 0;
+  let sy = 0;
+  for (const [x, y] of anchors) {
+    sx += x;
+    sy += y;
+  }
+  const cx = sx / anchors.length;
+  const cy = sy / anchors.length;
+
+  let total = 0;
+  for (const [x, y] of anchors) total += Math.hypot(x - cx, y - cy);
+
+  return { anchors, segments, cx, cy, radius: total / anchors.length };
+}
+
+// Every layer is deformed by one shared field, read at the angle a point sits
+// at around its own blob's centre and scaled by that blob's own radius. Because
+// all five read the same field, they swell and hollow at the same angles at the
+// same moment, so the gaps between neighbouring contours are preserved and an
+// inner outline does not push out through the one around it. Deforming each
+// layer on its own is what lets an inner bulge meet an outer hollow and cross.
+//
+// The waves stand rather than travel: each term is sin(lobes * angle) times
+// sin(time), so a lobe is pinned to fixed angles and only its depth pulses.
+// Writing it as sin(lobes * angle + speed * time) instead would send the lobes
+// marching around the outline, which reads as the shape rotating and sloshing
+// rather than changing form.
+
+// Radial terms: these push the outline out and pull it in, which is what makes
+// bulges and hollows appear.
+const SWELL = [
+  { lobes: 1, pace: 0.21, weight: 1, atAngle: 0, atTime: 0 },
+  { lobes: 2, pace: 0.17 * Math.SQRT2, weight: 0.8, atAngle: 1.1, atTime: 2.2 },
+  { lobes: 3, pace: 0.065 * Math.PI, weight: 0.55, atAngle: 2.7, atTime: 0.9 },
+  { lobes: 5, pace: 0.11 * Math.SQRT2, weight: 0.3, atAngle: 0.4, atTime: 3.6 },
+];
+
+// Tangential terms: these slide bends around the outline, so a hollow does not
+// merely deepen in place but drifts along the contour.
+const SLIDE = [
+  { lobes: 2, pace: 0.15, weight: 1, atAngle: 0.8, atTime: 1.4 },
+  { lobes: 3, pace: 0.12 * Math.SQRT2, weight: 0.6, atAngle: 2.1, atTime: 0.3 },
+];
+
+function fieldAt(bands, angle, t) {
+  let sum = 0;
+  let norm = 0;
+  for (const band of bands) {
+    sum +=
+      band.weight *
+      Math.sin(band.lobes * angle + band.atAngle) *
+      Math.sin(t * band.pace + band.atTime);
+    norm += band.weight;
+  }
+  return sum / norm;
+}
+
+// How far a segment's handles reach, as a multiple of their resting length.
+// Shortening them pulls the curve towards a straight run between its anchors;
+// lengthening them bows it out. This is what bends the curve itself, as opposed
+// to relocating it — and it is keyed to the same shared field, so neighbouring
+// layers stay in step here too.
+function handleScaleAt(angle, t, amount) {
+  return 1 + amount * Math.sin(2 * angle + 0.6) * Math.sin(t * 0.17 + 1.2);
+}
+
+// Rebuilds `d` for one frame. Each control travels rigidly with the anchor it
+// belongs to, and is only ever stretched or shortened along the line it already
+// points down. Both handles meeting at an anchor therefore keep the directions
+// they started with, so a join that was smooth in the artwork stays smooth —
+// blending a control between two anchors instead tilts the two handles apart
+// and pinches the outline into a corner.
+export function blobPathAt({ anchors, segments, cx, cy, radius }, t, amplitude) {
+  const scale = radius * amplitude;
+  const count = anchors.length;
+  const fmt = (value) => value.toFixed(2);
+
+  // An anchor's angle around its own centre is the only thing the field is read
+  // at, so the same angle means the same push on every layer.
+  const angles = anchors.map(([x, y]) => Math.atan2(y - cy, x - cx));
+
+  const shifts = anchors.map(([x, y], i) => {
+    const dx = x - cx;
+    const dy = y - cy;
+    const r = Math.hypot(dx, dy) || 1;
+    const out = fieldAt(SWELL, angles[i], t) * scale;
+    const along = fieldAt(SLIDE, angles[i], t) * scale * 0.6;
+    return [(dx / r) * out - (dy / r) * along, (dy / r) * out + (dx / r) * along];
+  });
+  const moved = anchors.map(([x, y], i) => [x + shifts[i][0], y + shifts[i][1]]);
+
+  let d = `M${fmt(moved[0][0])} ${fmt(moved[0][1])}`;
+
+  for (let i = 0; i < segments.length; i += 1) {
+    const next = (i + 1) % count;
+    const from = moved[i];
+    const to = moved[next];
+    const [c1, c2] = segments[i];
+    const reach = handleScaleAt(angles[i], t, amplitude * 2.5);
+
+    // Move the handle with its own anchor, then scale it about that anchor —
+    // length changes, direction does not.
+    const carry = (point, shift, about) => [
+      about[0] + (point[0] + shift[0] - about[0]) * reach,
+      about[1] + (point[1] + shift[1] - about[1]) * reach,
+    ];
+
+    const h1 = carry(c1, shifts[i], from);
+    const h2 = carry(c2, shifts[next], to);
+
+    d += `C${fmt(h1[0])} ${fmt(h1[1])} ${fmt(h2[0])} ${fmt(h2[1])} ${fmt(to[0])} ${fmt(to[1])}`;
+  }
+
+  return `${d}Z`;
+}

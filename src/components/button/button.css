@@ -1,0 +1,22 @@
+.button {
+  display: inline-block;
+  padding: 12px 24px;
+  color: var(--color-text);
+  background: var(--color-floor-2);
+  font-family: inherit;
+  font-weight: var(--font-weight-bold);
+  text-decoration: none;
+  border: 0;
+  cursor: pointer;
+  border-radius: var(--button-radius);
+  transition: border-radius var(--duration-homecardout) var(--easing-homecardout);
+}
+
+/* The hover radius is a percentage of the button's height, so 50 = a full pill.
+   A plain 50% would give an ellipse on a wide button. Also applied by the parent
+   card (see home-cards.css) and by the forced `hovered` state in Storybook. */
+.button:hover,
+.button--hovered {
+  border-radius: calc(var(--button-radius-hover) / 100 * (var(--button-height)));
+  transition: border-radius var(--duration-homecardin) var(--easing-homecardin);
+}

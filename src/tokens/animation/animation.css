@@ -14,6 +14,6 @@
   --duration-homecardin: 1600ms;
   --easing-homecardin: cubic-bezier(0, 0, 0.2, 1);
 
-  --duration-homecardout: 500ms;
+  --duration-homecardout: 150ms;
   --easing-homecardout: cubic-bezier(0, 0, 0.2, 1);
 }
