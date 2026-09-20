@@ -32,6 +32,7 @@ export function validateCard(c) {
   if (logo !== null && !LOGO_FILE.test(logo)) fail('logo has an invalid file name');
 
   return {
+    visible: typeof c.visible === 'boolean' ? c.visible : fail('Visible must be true or false'),
     fontFamily: oneOf(c.fontFamily, FONT_FAMILIES, 'Font'),
     title: text(c.title, 'Headline'),
     headlineType: oneOf(c.headlineType, HEADLINE_TYPES, 'Headline type'),
@@ -46,6 +47,7 @@ export function validateCard(c) {
     textAlign: oneOf(c.textAlign, TEXT_ALIGNS, 'Text alignment'),
     textWidth: int(c.textWidth, 50, 3000, 'Text block width'),
     padding: int(c.padding, 0, 500, 'Padding'),
+    hoverPadding: int(c.hoverPadding, 0, 500, 'Hover padding'),
     radius: int(c.radius, 0, 500, 'Radius'),
     hoverRadius: int(c.hoverRadius, 0, 500, 'Hover radius'),
     buttonRadius: int(c.buttonRadius, 0, 500, 'Button radius'),

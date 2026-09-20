@@ -2,7 +2,9 @@ import { useState } from 'react';
 import cards from './cards.json';
 import { postJson, useApplyEditor } from '../../tokens/useTokenEditor.js';
 import ApplyBar from '../../tokens/ApplyBar.jsx';
-import { ColorField, NumberField, Row, Section, SelectField, TextAreaField, TextField } from './setupFields.jsx';
+import { useApplyCheck } from '../../tokens/useApplyCheck.js';
+import { validateCard } from './cardSchema.js';
+import { CheckboxField, ColorField, NumberField, Row, Section, SelectField, TextAreaField, TextField } from './setupFields.jsx';
 import { HEADLINE_TYPES, DESCRIPTION_SIZES, TEXT_POSITIONS, TEXT_ALIGNS, TEXT_COLORS } from './cardSchema.js';
 
 const MAX_LOGO_BYTES = 1.5 * 1024 * 1024;
@@ -77,12 +79,17 @@ function CardSetup({ cardId, Card }) {
   });
   const set = (key) => (value) => setData((prev) => ({ ...prev, [key]: value }));
   const { logoUpload, ...config } = data;
+  const check = useApplyCheck(validateCard, config);
 
   return (
     <div style={{ fontFamily: "'Inter', sans-serif", color: '#111827' }}>
-      <ApplyBar dirty={dirty} status={status} onApply={apply} onReset={reset} />
+      <ApplyBar dirty={dirty} status={status} onApply={apply} onReset={reset} check={check} />
       <div style={{ display: 'grid', gridTemplateColumns: '360px minmax(0, 1fr)', gap: 32, alignItems: 'start' }}>
         <div>
+          <Section title="Tile">
+            <CheckboxField label="Show card on the home page" checked={data.visible} onChange={set('visible')} />
+          </Section>
+
           <Section title="Text block">
             <TextField label="Headline" value={data.title} onChange={set('title')} />
             <Row>
@@ -146,6 +153,7 @@ function CardSetup({ cardId, Card }) {
 
           <Section title="Hover state">
             <Row>
+              <NumberField label="Padding" value={data.hoverPadding} onChange={set('hoverPadding')} min={0} max={500} />
               <NumberField label="Radius" value={data.hoverRadius} onChange={set('hoverRadius')} min={0} max={500} />
               <NumberField label="Button radius" value={data.buttonHoverRadius} onChange={set('buttonHoverRadius')} min={0} max={50} suffix="%" />
             </Row>
@@ -170,7 +178,7 @@ function CardSetup({ cardId, Card }) {
           </div>
           <div style={{ overflow: 'auto', maxHeight: 'calc(100vh - 140px)', padding: 4 }}>
             <div style={{ zoom: zoom / 100, width: 'max-content' }}>
-              <Card {...config} logoUrl={logoUpload?.dataUrl} />
+              <Card {...config} visible logoUrl={logoUpload?.dataUrl} />
             </div>
           </div>
         </div>

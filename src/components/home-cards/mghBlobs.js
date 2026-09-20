@@ -114,12 +114,11 @@ export function parseBlobPath(d) {
   return { anchors, segments, cx, cy, radius: total / anchors.length };
 }
 
-// Every layer is deformed by one shared field, read at the angle a point sits
-// at around its own blob's centre and scaled by that blob's own radius. Because
-// all five read the same field, they swell and hollow at the same angles at the
-// same moment, so the gaps between neighbouring contours are preserved and an
-// inner outline does not push out through the one around it. Deforming each
-// layer on its own is what lets an inner bulge meet an outer hollow and cross.
+// Each layer is deformed by its own reading of the field: `seed` rotates where
+// that layer's lobes sit and offsets when they pulse, so every blob floats on
+// its own schedule rather than echoing its neighbours. Nothing keeps the
+// contours from meeting except headroom, so the amplitude is capped at a value
+// measured against the rendered card — see MORPH_AMOUNT in MghCard.
 //
 // The waves stand rather than travel: each term is sin(lobes * angle) times
 // sin(time), so a lobe is pinned to fixed angles and only its depth pulses.
@@ -130,27 +129,33 @@ export function parseBlobPath(d) {
 // Radial terms: these push the outline out and pull it in, which is what makes
 // bulges and hollows appear.
 const SWELL = [
-  { lobes: 1, pace: 0.21, weight: 1, atAngle: 0, atTime: 0 },
-  { lobes: 2, pace: 0.17 * Math.SQRT2, weight: 0.8, atAngle: 1.1, atTime: 2.2 },
-  { lobes: 3, pace: 0.065 * Math.PI, weight: 0.55, atAngle: 2.7, atTime: 0.9 },
-  { lobes: 5, pace: 0.11 * Math.SQRT2, weight: 0.3, atAngle: 0.4, atTime: 3.6 },
+  { lobes: 1, pace: 0.27, weight: 1, atAngle: 0, atTime: 0 },
+  { lobes: 2, pace: 0.22 * Math.SQRT2, weight: 0.8, atAngle: 1.1, atTime: 2.2 },
+  { lobes: 3, pace: 0.085 * Math.PI, weight: 0.55, atAngle: 2.7, atTime: 0.9 },
+  { lobes: 5, pace: 0.14 * Math.SQRT2, weight: 0.3, atAngle: 0.4, atTime: 3.6 },
 ];
 
 // Tangential terms: these slide bends around the outline, so a hollow does not
 // merely deepen in place but drifts along the contour.
 const SLIDE = [
-  { lobes: 2, pace: 0.15, weight: 1, atAngle: 0.8, atTime: 1.4 },
-  { lobes: 3, pace: 0.12 * Math.SQRT2, weight: 0.6, atAngle: 2.1, atTime: 0.3 },
+  { lobes: 2, pace: 0.195, weight: 1, atAngle: 0.8, atTime: 1.4 },
+  { lobes: 3, pace: 0.155 * Math.SQRT2, weight: 0.6, atAngle: 2.1, atTime: 0.3 },
 ];
 
-function fieldAt(bands, angle, t) {
+// How the morph budget is split. Radial swelling closes the gap to the next
+// contour; sliding and rebending do not, so they carry most of the movement.
+const RADIAL_SHARE = 0.4;
+const TANGENT_SHARE = 1.2;
+const REBEND_SHARE = 4;
+
+function fieldAt(bands, angle, t, seed) {
   let sum = 0;
   let norm = 0;
   for (const band of bands) {
     sum +=
       band.weight *
-      Math.sin(band.lobes * angle + band.atAngle) *
-      Math.sin(t * band.pace + band.atTime);
+      Math.sin(band.lobes * angle + band.atAngle + seed * 1.7) *
+      Math.sin(t * band.pace + band.atTime + seed * 2.3);
     norm += band.weight;
   }
   return sum / norm;
@@ -159,10 +164,9 @@ function fieldAt(bands, angle, t) {
 // How far a segment's handles reach, as a multiple of their resting length.
 // Shortening them pulls the curve towards a straight run between its anchors;
 // lengthening them bows it out. This is what bends the curve itself, as opposed
-// to relocating it — and it is keyed to the same shared field, so neighbouring
-// layers stay in step here too.
-function handleScaleAt(angle, t, amount) {
-  return 1 + amount * Math.sin(2 * angle + 0.6) * Math.sin(t * 0.17 + 1.2);
+// to relocating it, and it carries the same per-layer seed as the rest.
+function handleScaleAt(angle, t, seed, amount) {
+  return 1 + amount * Math.sin(2 * angle + 0.6 + seed * 1.7) * Math.sin(t * 0.22 + 1.2 + seed * 2.3);
 }
 
 // Rebuilds `d` for one frame. Each control travels rigidly with the anchor it
@@ -171,21 +175,24 @@ function handleScaleAt(angle, t, amount) {
 // they started with, so a join that was smooth in the artwork stays smooth —
 // blending a control between two anchors instead tilts the two handles apart
 // and pinches the outline into a corner.
-export function blobPathAt({ anchors, segments, cx, cy, radius }, t, amplitude) {
+export function blobPathAt({ anchors, segments, cx, cy, radius }, t, seed, amplitude) {
   const scale = radius * amplitude;
   const count = anchors.length;
   const fmt = (value) => value.toFixed(2);
 
-  // An anchor's angle around its own centre is the only thing the field is read
-  // at, so the same angle means the same push on every layer.
   const angles = anchors.map(([x, y]) => Math.atan2(y - cy, x - cx));
 
   const shifts = anchors.map(([x, y], i) => {
     const dx = x - cx;
     const dy = y - cy;
     const r = Math.hypot(dx, dy) || 1;
-    const out = fieldAt(SWELL, angles[i], t) * scale;
-    const along = fieldAt(SLIDE, angles[i], t) * scale * 0.6;
+    // Radial motion is the only part that eats into the gap to the neighbouring
+    // contour, so it is kept on a short leash. Sliding bends along the outline
+    // and rebending the curves reshapes the blob just as visibly without
+    // pushing its envelope outwards, which is what buys each layer the freedom
+    // to drift on its own.
+    const out = fieldAt(SWELL, angles[i], t, seed) * scale * RADIAL_SHARE;
+    const along = fieldAt(SLIDE, angles[i], t, seed) * scale * TANGENT_SHARE;
     return [(dx / r) * out - (dy / r) * along, (dy / r) * out + (dx / r) * along];
   });
   const moved = anchors.map(([x, y], i) => [x + shifts[i][0], y + shifts[i][1]]);
@@ -197,7 +204,7 @@ export function blobPathAt({ anchors, segments, cx, cy, radius }, t, amplitude) 
     const from = moved[i];
     const to = moved[next];
     const [c1, c2] = segments[i];
-    const reach = handleScaleAt(angles[i], t, amplitude * 2.5);
+    const reach = handleScaleAt(angles[i], t, seed, amplitude * REBEND_SHARE);
 
     // Move the handle with its own anchor, then scale it about that anchor —
     // length changes, direction does not.

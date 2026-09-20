@@ -15,6 +15,7 @@ const FONT = {
 export default function HomeCardShell({
   variant,
   bgDuration,
+  visible = true,
   fontFamily = 'inter',
   title,
   headlineType,
@@ -30,6 +31,7 @@ export default function HomeCardShell({
   textAlign,
   textWidth,
   padding,
+  hoverPadding = padding,
   radius,
   hoverRadius,
   buttonRadius = 12,
@@ -43,26 +45,29 @@ export default function HomeCardShell({
   children,
   ...rest
 }) {
+  if (!visible) return null;
   const Headline = headlineType;
   const logoSrc = logoUrl ?? resolveLogo(logo);
   const style = {
     width,
     height,
+    '--card-padding': `${padding}px`,
+    '--card-padding-hover': `${hoverPadding}px`,
     '--card-radius': `${radius}px`,
     '--card-radius-hover': `${hoverRadius}px`,
     '--card-bg': toBackground(background, backgroundEnd, gradientAngle),
     '--card-bg-hover': toBackground(hoverBackground, hoverBackgroundEnd, gradientAngle),
     '--card-bg-duration': bgDuration,
+    // A flat stand-in for the card's own surface. The button tints against it
+    // instead of against transparency, so it stays opaque over the artwork.
+    '--card-surface': background,
     color: textColor === 'light' ? '#ffffff' : 'var(--color-text)',
   };
 
   return (
     <div className={`home-card home-card--${variant}`} style={style} {...rest}>
       {children}
-      <div
-        className="home-card__details"
-        style={{ padding }}
-      >
+      <div className="home-card__details">
         <div
           className="home-card__text"
           style={{ width: textWidth, justifyContent: JUSTIFY[textPosition], textAlign, alignItems: ALIGN[textAlign], fontFamily: FONT[fontFamily] }}

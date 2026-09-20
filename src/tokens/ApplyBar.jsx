@@ -6,11 +6,15 @@ const button = {
   cursor: 'pointer',
 };
 
-function ApplyBar({ dirty, status, onApply, onReset }) {
+function ApplyBar({ dirty, status, onApply, onReset, check = { ok: true, error: '' } }) {
   const saving = status.state === 'saving';
+  const blocked = dirty && !check.ok;
   let message = status.message;
   let color = status.state === 'error' ? '#dc2626' : '#15803d';
-  if (dirty && status.state !== 'error') {
+  if (blocked) {
+    message = `Cannot apply: ${check.error}`;
+    color = '#dc2626';
+  } else if (dirty && status.state !== 'error') {
     message = 'Unapplied changes';
     color = '#b45309';
   }
@@ -32,9 +36,9 @@ function ApplyBar({ dirty, status, onApply, onReset }) {
     >
       <button
         type="button"
-        disabled={!dirty || saving}
+        disabled={!dirty || saving || blocked}
         onClick={onApply}
-        style={{ ...button, color: '#fff', background: '#111827', opacity: !dirty || saving ? 0.4 : 1 }}
+        style={{ ...button, color: '#fff', background: '#111827', opacity: !dirty || saving || blocked ? 0.4 : 1 }}
       >
         Apply
       </button>

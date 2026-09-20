@@ -6,13 +6,14 @@ import { BLOB_LAYERS, blobPathAt, parseBlobPath } from './mghBlobs';
 const MOTION_QUERY = '(prefers-reduced-motion: reduce)';
 
 // Peak deviation from the resting outline, as a fraction of each blob's radius.
-// Enough that bends travel along the outline and the silhouette reads as
-// reshaping, but inside the tolerance where the layers keep their nesting.
-// Measured against the rendered card over a full turn of the field: 0.15 is
-// the last value with no contour crossing at all, 0.16 starts to breach. This
-// sits a notch below that, since the card's width and height are adjustable
-// and changing them changes the gaps between layers.
-const MORPH_AMOUNT = 0.14;
+// Because the layers drift independently there is nothing holding them apart,
+// so this is the binding constraint on how far the outlines may stray.
+// Measured against the rendered card over a full turn of the field: 0.11 is
+// the last value with no contour crossing, 0.12 starts to breach, and the
+// tightest pair is the third contour inside the fourth. This sits below that,
+// since the card's width and height are adjustable and changing them changes
+// the gaps between layers.
+const MORPH_AMOUNT = 0.1;
 
 function subscribeToMotionQuery(onChange) {
   const query = window.matchMedia(MOTION_QUERY);
@@ -49,11 +50,11 @@ export default function MghCard(props) {
         const layer = BLOB_LAYERS[i];
         const node = pathsRef.current[i];
         if (!node) continue;
-        // `duration` now sets how far this layer lags the one outside it, not
-        // how fast it runs. A lag keeps the contours from breathing in exact
-        // lockstep; running them at different rates instead would drift them
-        // out of register until an inner outline crossed the one around it.
-        node.setAttribute('d', blobPathAt(geometry[i], t + layer.duration * 0.2, MORPH_AMOUNT));
+        // `duration` is the per-layer speed dial again, and the index seeds a
+        // different lobe arrangement and pulse timing for each blob, so no two
+        // drift the same way. Nothing holds the contours apart once they move
+        // independently, which is what caps MORPH_AMOUNT.
+        node.setAttribute('d', blobPathAt(geometry[i], (t * 12) / layer.duration, i * 1.9, MORPH_AMOUNT));
       }
       frame = requestAnimationFrame(draw);
     };

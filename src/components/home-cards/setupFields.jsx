@@ -110,3 +110,12 @@ export function ColorField({ label, value, onChange }) {
     </Field>
   );
 }
+
+export function CheckboxField({ label, checked, onChange }) {
+  return (
+    <label style={{ display: 'flex', alignItems: 'center', gap: 8, font: '13px Inter, sans-serif', cursor: 'pointer' }}>
+      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} />
+      {label}
+    </label>
+  );
+}

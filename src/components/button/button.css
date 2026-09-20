@@ -2,7 +2,14 @@
   display: inline-block;
   padding: 12px 24px;
   color: var(--color-text);
-  background: color-mix(in srgb, var(--color-floor-2) var(--button-opacity, 50%), transparent);
+  /* Tinted against the surface behind it rather than against transparency, so
+     the fill is fully opaque — nothing showing through, including a card's
+     moving artwork. `--button-opacity` still sets how far the tint goes. */
+  background: color-mix(
+    in srgb,
+    var(--color-floor-2) var(--button-opacity, 50%),
+    var(--card-surface, var(--color-floor-0))
+  );
   font-family: inherit;
   font-weight: var(--font-weight-bold);
   text-decoration: none;

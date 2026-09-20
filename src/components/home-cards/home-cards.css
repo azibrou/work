@@ -31,6 +31,13 @@
   pointer-events: none;
   display: flex;
   flex-direction: column;
+  padding: var(--card-padding);
+  transition: padding var(--duration-homecardout) var(--easing-homecardout);
+}
+
+.home-card:hover .home-card__details {
+  padding: var(--card-padding-hover);
+  transition: padding var(--duration-homecardin) var(--easing-homecardin);
 }
 
 .home-card__text {
