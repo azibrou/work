@@ -114,9 +114,9 @@
   "yandex": {
     "visible": true,
     "fontFamily": "inter",
-    "title": "Yandex",
+    "title": "Yandex Music",
     "headlineType": "h4",
-    "description": "Reimagining search and discovery for Yandex.",
+    "description": "Reimagining music experience on Android",
     "descriptionSize": "m",
     "textColor": "dark",
     "logo": null,
