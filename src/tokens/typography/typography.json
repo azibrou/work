@@ -1,0 +1,61 @@
+{
+  "weights": {
+    "regular": 400,
+    "bold": 700
+  },
+  "headings": {
+    "h1": {
+      "label": "H1",
+      "fontSize": 48,
+      "lineHeight": 56,
+      "fontWeight": 700
+    },
+    "h2": {
+      "label": "H2",
+      "fontSize": 40,
+      "lineHeight": 48,
+      "fontWeight": 700
+    },
+    "h3": {
+      "label": "H3",
+      "fontSize": 32,
+      "lineHeight": 40,
+      "fontWeight": 600
+    },
+    "h4": {
+      "label": "H4",
+      "fontSize": 28,
+      "lineHeight": 36,
+      "fontWeight": 600
+    },
+    "h5": {
+      "label": "H5",
+      "fontSize": 24,
+      "lineHeight": 32,
+      "fontWeight": 600
+    },
+    "h6": {
+      "label": "H6",
+      "fontSize": 20,
+      "lineHeight": 28,
+      "fontWeight": 600
+    }
+  },
+  "body": {
+    "s": {
+      "label": "Body S",
+      "fontSize": 14,
+      "lineHeight": 20
+    },
+    "m": {
+      "label": "Body M",
+      "fontSize": 16,
+      "lineHeight": 24
+    },
+    "l": {
+      "label": "Body L",
+      "fontSize": 18,
+      "lineHeight": 28
+    }
+  }
+}

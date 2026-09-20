@@ -1,0 +1,86 @@
+{
+  "groups": [
+    {
+      "name": "Content",
+      "description": "Text and link colors.",
+      "tokens": [
+        {
+          "label": "Text",
+          "cssVar": "--color-text",
+          "hex": "#242320"
+        },
+        {
+          "label": "Link",
+          "cssVar": "--color-link",
+          "hex": "#240cad"
+        }
+      ]
+    },
+    {
+      "name": "Floor",
+      "description": "Page-level background layers.",
+      "tokens": [
+        {
+          "label": "Floor 0",
+          "cssVar": "--color-floor-0",
+          "hex": "#ffffff"
+        },
+        {
+          "label": "Floor 1",
+          "cssVar": "--color-floor-1",
+          "hex": "#ffffff"
+        },
+        {
+          "label": "Floor 2",
+          "cssVar": "--color-floor-2",
+          "hex": "#ffffff"
+        }
+      ]
+    },
+    {
+      "name": "Surface",
+      "description": "Card and tile backgrounds sitting above the floor.",
+      "tokens": [
+        {
+          "label": "Surface 1",
+          "cssVar": "--color-surface-1",
+          "hex": "#f5f7f7"
+        },
+        {
+          "label": "Surface 2",
+          "cssVar": "--color-surface-2",
+          "hex": "#edf0f0"
+        },
+        {
+          "label": "Surface 3",
+          "cssVar": "--color-surface-3",
+          "hex": "#e4e8e8"
+        }
+      ]
+    },
+    {
+      "name": "Shader",
+      "description": "Overlays for images and white tiles, keeping the container edges visible.",
+      "tokens": [
+        {
+          "label": "Shader 1",
+          "cssVar": "--color-shader-1",
+          "hex": "#000000",
+          "opacity": 4
+        },
+        {
+          "label": "Shader 2",
+          "cssVar": "--color-shader-2",
+          "hex": "#000000",
+          "opacity": 8
+        },
+        {
+          "label": "Shader 3",
+          "cssVar": "--color-shader-3",
+          "hex": "#000000",
+          "opacity": 12
+        }
+      ]
+    }
+  ]
+}

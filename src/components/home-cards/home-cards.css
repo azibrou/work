@@ -1,0 +1,195 @@
+.home-card,
+.home-card * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.home-card {
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-family-base);
+  background: var(--card-bg);
+  border-radius: var(--card-radius);
+  transition:
+    border-radius var(--duration-basic) var(--easing-basic),
+    background-color var(--card-bg-duration, 150ms) ease;
+}
+
+.home-card:hover {
+  background: var(--card-bg-hover);
+  border-radius: var(--card-radius-hover);
+}
+
+.home-card__details {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.home-card__text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 100%;
+}
+
+.home-card__link {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.home-card__image {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  object-fit: contain;
+}
+
+/* Robot delivery */
+.home-card--robot .home-card__image {
+  right: -30%;
+  top: 40%;
+  height: 100%;
+  width: auto;
+  transform: translateY(-40%) scale(2);
+  transform-origin: center right;
+  transition: transform var(--duration-medium) cubic-bezier(0, 0, 0.25, 1);
+}
+
+.home-card--robot:hover .home-card__image {
+  transform: translateY(-35%) scale(2.2);
+}
+
+/* MGH */
+.home-card--mgh .home-card__image {
+  width: auto;
+  transform: translateY(-50%) scale(1);
+  transform-origin: center right;
+  transition: transform var(--duration-medium) cubic-bezier(0.075, 1.4, 0.165, 1);
+}
+
+.home-card--mgh:hover .home-card__image {
+  transition: transform var(--duration-slow) var(--easing-slow);
+}
+
+.home-card--mgh .home-card__image--a {
+  top: 30%;
+  right: 5%;
+  rotate: 5deg;
+  height: 30%;
+}
+
+.home-card--mgh:hover .home-card__image--a {
+  transform: translateY(-35%) translateX(30%) scale(1.2) rotate(8deg);
+}
+
+.home-card--mgh .home-card__image--b {
+  top: 31%;
+  right: -5%;
+  rotate: 12deg;
+  height: 43%;
+}
+
+.home-card--mgh:hover .home-card__image--b {
+  transform: translateY(-50%) translateX(30%) scale(1.2) rotate(-5deg);
+}
+
+.home-card--mgh .home-card__image--c {
+  top: 34%;
+  right: -15%;
+  rotate: 10deg;
+  height: 60%;
+}
+
+.home-card--mgh:hover .home-card__image--c {
+  transform: translateY(-40%) translateX(23%) scale(1.2) rotate(5deg);
+}
+
+.home-card--mgh .home-card__image--d {
+  top: 40%;
+  right: -29%;
+  rotate: 15deg;
+  height: 70%;
+}
+
+.home-card--mgh:hover .home-card__image--d {
+  transform: translateY(-45%) translateX(20%) scale(1.2) rotate(4deg);
+}
+
+.home-card--mgh .home-card__image--e {
+  top: 40%;
+  right: -28%;
+  rotate: 15deg;
+  height: 100%;
+}
+
+.home-card--mgh:hover .home-card__image--e {
+  transform: translateY(-60%) translateX(20%) scale(1.2) rotate(-8deg);
+}
+
+/* Fitbit rewards */
+.home-card--fitbit-rewards .home-card__image {
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: auto;
+}
+
+/* Fitbit engagement */
+.home-card--fitbit-engagement .home-card__image {
+  left: 0;
+  bottom: -40px;
+  height: 60%;
+  width: auto;
+  transform-origin: bottom left;
+  transition: transform 2000ms ease-out;
+}
+
+.home-card--fitbit-engagement:hover .home-card__image {
+  transform: translateX(-2000px);
+  transition: transform 25s ease-out;
+}
+
+/* Yandex */
+.home-card--yandex .home-card__image {
+  right: -200px;
+  top: -40px;
+  height: 140%;
+  width: auto;
+}
+
+.home-card--yandex .home-card__disc {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  object-fit: contain;
+  right: 125px;
+  top: 156px;
+  width: 55px;
+  height: 55px;
+  transition: transform 15000ms ease-out;
+}
+
+.home-card--yandex:hover .home-card__disc {
+  transform: rotate(720deg);
+}
+
+/* Grocery revamp */
+.home-card--grocery .home-card__image {
+  will-change: transform;
+  transition: transform var(--duration-quick) var(--easing-quick);
+}
+
+.home-card--grocery .home-card__image--main {
+  right: -16%;
+  top: 3%;
+  height: 100%;
+}
+
+.home-card--grocery .home-card__image--cart {
+  right: 40%;
+  top: 44%;
+  height: 60%;
+}

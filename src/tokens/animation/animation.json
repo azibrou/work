@@ -1,0 +1,24 @@
+{
+  "tokens": {
+    "quick": {
+      "label": "Quick",
+      "duration": 100,
+      "easing": "ease-out"
+    },
+    "basic": {
+      "label": "Basic",
+      "duration": 150,
+      "easing": "ease-out"
+    },
+    "medium": {
+      "label": "Medium",
+      "duration": 300,
+      "easing": "ease-out"
+    },
+    "slow": {
+      "label": "Slow",
+      "duration": 500,
+      "easing": "ease-out"
+    }
+  }
+}
