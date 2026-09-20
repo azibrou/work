@@ -9,6 +9,7 @@ const FONT = {
   inter: 'var(--font-family-base)',
   'noto-serif': 'var(--font-family-serif)',
   'bricolage-grotesque': 'var(--font-family-bricolage)',
+  'roboto-mono': 'var(--font-family-mono)',
 };
 
 export default function HomeCardShell({
@@ -33,6 +34,7 @@ export default function HomeCardShell({
   hoverRadius,
   buttonRadius = 12,
   buttonHoverRadius = 50,
+  buttonOpacity = 50,
   background,
   backgroundEnd,
   hoverBackground,
@@ -89,6 +91,7 @@ export default function HomeCardShell({
           size={descriptionSize}
           radius={buttonRadius}
           hoverRadius={buttonHoverRadius}
+          opacity={buttonOpacity}
           className="home-card__button"
           style={{ alignSelf: ALIGN[textAlign], fontFamily: FONT[fontFamily] }}
         />

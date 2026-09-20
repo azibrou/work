@@ -2,7 +2,7 @@
 // validation of a card's config, and the background helper. Keep free of node/browser APIs.
 import { normalizeHex } from '../../tokens/generate.js';
 
-export const FONT_FAMILIES = ['inter', 'noto-serif', 'bricolage-grotesque'];
+export const FONT_FAMILIES = ['inter', 'noto-serif', 'bricolage-grotesque', 'roboto-mono'];
 export const HEADLINE_TYPES = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
 export const DESCRIPTION_SIZES = ['s', 'm', 'l'];
 export const TEXT_POSITIONS = ['top', 'center', 'bottom'];
@@ -50,6 +50,7 @@ export function validateCard(c) {
     hoverRadius: int(c.hoverRadius, 0, 500, 'Hover radius'),
     buttonRadius: int(c.buttonRadius, 0, 500, 'Button radius'),
     buttonHoverRadius: int(c.buttonHoverRadius, 0, 50, 'Button hover radius'),
+    buttonOpacity: int(c.buttonOpacity, 0, 100, 'Button opacity'),
     background: color(c.background, 'Background'),
     backgroundEnd: color(c.backgroundEnd, 'Background end'),
     hoverBackground: color(c.hoverBackground, 'Hover background'),

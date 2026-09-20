@@ -12,6 +12,7 @@ const FONT_OPTIONS = [
   { value: 'inter', label: 'Inter' },
   { value: 'noto-serif', label: 'Noto Serif' },
   { value: 'bricolage-grotesque', label: 'Bricolage Grotesque' },
+  { value: 'roboto-mono', label: 'Roboto Mono' },
 ];
 
 const options = (values, labels = {}) => values.map((v) => ({ value: v, label: labels[v] ?? v.toUpperCase() }));
@@ -133,6 +134,7 @@ function CardSetup({ cardId, Card }) {
             <Row>
               <NumberField label="Radius" value={data.radius} onChange={set('radius')} min={0} max={500} />
               <NumberField label="Button radius" value={data.buttonRadius} onChange={set('buttonRadius')} min={0} max={500} />
+              <NumberField label="Button opacity" value={data.buttonOpacity} onChange={set('buttonOpacity')} min={0} max={100} suffix="%" />
               <NumberField label="Gradient angle" value={data.gradientAngle} onChange={set('gradientAngle')} min={0} max={360} suffix="deg" />
             </Row>
             <Row>

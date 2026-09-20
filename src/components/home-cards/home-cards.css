@@ -52,7 +52,10 @@
 /* Hovering anywhere on the card morphs the button too. */
 .home-card:hover .home-card__button {
   border-radius: calc(var(--button-radius-hover) / 100 * (var(--button-height)));
-  transition: border-radius var(--duration-homecardin) var(--easing-homecardin);
+  background: var(--color-floor-2);
+  transition:
+    border-radius var(--duration-homecardin) var(--easing-homecardin),
+    background var(--duration-homecardin) var(--easing-homecardin);
 }
 
 .home-card__image {

@@ -9,10 +9,11 @@ export const EASINGS = {
 };
 
 const FONT_IMPORT =
-  "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif:wght@400;500;600;700&family=Bricolage+Grotesque:wght@400;500;600;700&display=swap');";
+  "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif:wght@400;500;600;700&family=Bricolage+Grotesque:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap');";
 const FONT_FAMILY = "'Inter', sans-serif";
 const FONT_FAMILY_SERIF = "'Noto Serif', serif";
 const FONT_FAMILY_BRICOLAGE = "'Bricolage Grotesque', sans-serif";
+const FONT_FAMILY_MONO = "'Roboto Mono', monospace";
 
 export function normalizeHex(input) {
   const value = input.trim().replace(/^#?/, '#').toLowerCase();
@@ -72,6 +73,7 @@ function typographyCss(data) {
     `  --font-family-base: ${FONT_FAMILY};`,
     `  --font-family-serif: ${FONT_FAMILY_SERIF};`,
     `  --font-family-bricolage: ${FONT_FAMILY_BRICOLAGE};`,
+    `  --font-family-mono: ${FONT_FAMILY_MONO};`,
     '',
     headingLines.join('\n\n'),
     '',

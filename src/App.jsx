@@ -27,7 +27,13 @@ function App() {
         ))}
       </nav>
       <div className="memo">
-        <h1>Product design portfolio</h1>
+        <h1>About me</h1>
+        <p className="memo-intro">
+          12+ years in health, finance, automotive, and e-commerce. My engineering background
+          helps me design complex systems and work closely with engineering teams, especially
+          where software meets physical operations. Using AI daily in my workflow and design
+          hardware in my spare time
+        </p>
       </div>
       {section === 'Doing' && (
         <div className="tiles">

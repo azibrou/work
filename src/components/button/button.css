@@ -2,14 +2,16 @@
   display: inline-block;
   padding: 12px 24px;
   color: var(--color-text);
-  background: var(--color-floor-2);
+  background: color-mix(in srgb, var(--color-floor-2) var(--button-opacity, 50%), transparent);
   font-family: inherit;
   font-weight: var(--font-weight-bold);
   text-decoration: none;
   border: 0;
   cursor: pointer;
   border-radius: var(--button-radius);
-  transition: border-radius var(--duration-homecardout) var(--easing-homecardout);
+  transition:
+    border-radius var(--duration-homecardout) var(--easing-homecardout),
+    background var(--duration-homecardout) var(--easing-homecardout);
 }
 
 /* The hover radius is a percentage of the button's height, so 50 = a full pill.
@@ -18,5 +20,8 @@
 .button:hover,
 .button--hovered {
   border-radius: calc(var(--button-radius-hover) / 100 * (var(--button-height)));
-  transition: border-radius var(--duration-homecardin) var(--easing-homecardin);
+  background: var(--color-floor-2);
+  transition:
+    border-radius var(--duration-homecardin) var(--easing-homecardin),
+    background var(--duration-homecardin) var(--easing-homecardin);
 }
