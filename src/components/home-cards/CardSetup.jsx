@@ -4,18 +4,30 @@ import { postJson, useApplyEditor } from '../../tokens/useTokenEditor.js';
 import ApplyBar from '../../tokens/ApplyBar.jsx';
 import { useApplyCheck } from '../../tokens/useApplyCheck.js';
 import { validateCard } from './cardSchema.js';
-import { CheckboxField, ColorField, NumberField, Row, Section, SelectField, TextAreaField, TextField } from './setupFields.jsx';
-import { HEADLINE_TYPES, DESCRIPTION_SIZES, TEXT_POSITIONS, TEXT_ALIGNS, TEXT_COLORS } from './cardSchema.js';
+import { CheckboxField, ColorField, NumberField, Row, Section, SelectField, SpacingField, TextAreaField, TextField } from './setupFields.jsx';
+import { spaceValue } from '../../tokens/spacing/spacing.js';
+import { HEADLINE_TYPES, DESCRIPTION_SIZES, TEXT_WEIGHTS, TEXT_WIDTH_UNITS, TEXT_POSITIONS, TEXT_ALIGNS, TEXT_COLORS, FONT_OPTIONS } from './cardSchema.js';
 
 const MAX_LOGO_BYTES = 1.5 * 1024 * 1024;
 const LOGO_TYPES = ['image/svg+xml', 'image/png', 'image/jpeg', 'image/webp'];
 
-const FONT_OPTIONS = [
-  { value: 'inter', label: 'Inter' },
-  { value: 'noto-serif', label: 'Noto Serif' },
-  { value: 'bricolage-grotesque', label: 'Bricolage Grotesque' },
-  { value: 'roboto-mono', label: 'Roboto Mono' },
-];
+
+const TEXT_STYLE_LABELS = { s: 'Body S', m: 'Body M', l: 'Body L' };
+const WEIGHT_LABELS = { regular: 'Regular', semibold: 'Semibold', bold: 'Bold' };
+
+const WIDTH_UNIT_LABELS = { px: 'Pixels', percent: '% of available width' };
+
+// Switching unit converts the value against the width inside the padding, so the
+// text block keeps its size until the number itself is changed.
+function convertTextWidth(data, unit) {
+  const available = Math.max(1, data.width - 2 * spaceValue(data.padding));
+  if (unit === data.textWidthUnit) return data;
+  const textWidth =
+    unit === 'percent'
+      ? Math.min(100, Math.max(1, Math.round((data.textWidth / available) * 100)))
+      : Math.min(3000, Math.max(50, Math.round((data.textWidth / 100) * available)));
+  return { ...data, textWidthUnit: unit, textWidth };
+}
 
 const options = (values, labels = {}) => values.map((v) => ({ value: v, label: labels[v] ?? v.toUpperCase() }));
 const capitalized = Object.fromEntries(
@@ -91,16 +103,11 @@ function CardSetup({ cardId, Card }) {
           </Section>
 
           <Section title="Text block">
+            <CheckboxField label="Show headline" checked={data.headlineVisible ?? true} onChange={set('headlineVisible')} />
             <TextField label="Headline" value={data.title} onChange={set('title')} />
             <Row>
-              <SelectField label="Font" value={data.fontFamily} onChange={set('fontFamily')} options={FONT_OPTIONS} />
+              <SelectField label="Headline font" value={data.fontFamily} onChange={set('fontFamily')} options={FONT_OPTIONS} />
               <SelectField label="Headline type" value={data.headlineType} onChange={set('headlineType')} options={options(HEADLINE_TYPES)} />
-              <SelectField
-                label="Description size"
-                value={data.descriptionSize}
-                onChange={set('descriptionSize')}
-                options={options(DESCRIPTION_SIZES, { s: 'Body S', m: 'Body M', l: 'Body L' })}
-              />
               <SelectField
                 label="Text color"
                 value={data.textColor}
@@ -109,13 +116,37 @@ function CardSetup({ cardId, Card }) {
               />
             </Row>
             <TextAreaField label="Description" value={data.description} onChange={set('description')} />
+            <Row>
+              <SelectField label="Description font" value={data.descriptionFontFamily} onChange={set('descriptionFontFamily')} options={FONT_OPTIONS} />
+              <SelectField
+                label="Text style"
+                value={data.descriptionSize}
+                onChange={set('descriptionSize')}
+                options={options(DESCRIPTION_SIZES, TEXT_STYLE_LABELS)}
+              />
+              <SelectField label="Weight" value={data.descriptionWeight} onChange={set('descriptionWeight')} options={options(TEXT_WEIGHTS, WEIGHT_LABELS)} />
+            </Row>
             <LogoField
               data={data}
               onUpload={set('logoUpload')}
               onRemove={() => setData(({ logoUpload: _dropped, ...rest }) => ({ ...rest, logo: null }))}
             />
+            <TextField
+              label="Logo description for screen readers (company name; empty = decorative)"
+              value={data.logoAlt ?? ''}
+              onChange={set('logoAlt')}
+            />
             <Row>
-              <NumberField label="Logo size" value={data.logoSize} onChange={set('logoSize')} min={8} max={400} />
+              <NumberField label="Logo height"value={data.logoSize} onChange={set('logoSize')} min={8} max={400} />
+            </Row>
+          </Section>
+
+          <Section title="Button">
+            <TextField label="Button text" value={data.buttonLabel ?? 'View case study'} onChange={set('buttonLabel')} />
+            <Row>
+              <SelectField label="Font" value={data.buttonFontFamily} onChange={set('buttonFontFamily')} options={FONT_OPTIONS} />
+              <SelectField label="Text style" value={data.buttonSize} onChange={set('buttonSize')} options={options(DESCRIPTION_SIZES, TEXT_STYLE_LABELS)} />
+              <SelectField label="Weight" value={data.buttonWeight} onChange={set('buttonWeight')} options={options(TEXT_WEIGHTS, WEIGHT_LABELS)} />
             </Row>
           </Section>
 
@@ -132,9 +163,28 @@ function CardSetup({ cardId, Card }) {
               <SelectField label="Text alignment" value={data.textAlign} onChange={set('textAlign')} options={options(TEXT_ALIGNS, capitalized)} />
             </Row>
             <Row>
-              <NumberField label="Text block width" value={data.textWidth} onChange={set('textWidth')} min={50} max={3000} />
-              <NumberField label="Padding" value={data.padding} onChange={set('padding')} min={0} max={500} />
+              <SelectField
+                label="Text block width unit"
+                value={data.textWidthUnit ?? 'px'}
+                onChange={(unit) => setData((prev) => convertTextWidth({ ...prev, textWidthUnit: prev.textWidthUnit ?? 'px' }, unit))}
+                options={options(TEXT_WIDTH_UNITS, WIDTH_UNIT_LABELS)}
+              />
+              {(data.textWidthUnit ?? 'px') === 'percent' ? (
+                <NumberField key="percent" label="Text block width" value={data.textWidth} onChange={set('textWidth')} min={1} max={100} suffix="%" />
+              ) : (
+                <NumberField key="px" label="Text block width" value={data.textWidth} onChange={set('textWidth')} min={50} max={3000} />
+              )}
+              <SpacingField label="Padding" value={data.padding} onChange={set('padding')} />
             </Row>
+          </Section>
+
+          <Section title="Spacing">
+            <Row>
+              <SpacingField label="Below logo" value={data.logoGap} onChange={set('logoGap')} />
+              <SpacingField label="Headline to description" value={data.textGap} onChange={set('textGap')} />
+              <SpacingField label="Above button" value={data.buttonGap} onChange={set('buttonGap')} />
+            </Row>
+            <span style={{ fontSize: 12, color: '#6b7280' }}>Padding and spacing use the tokens from Tokens/Spacing.</span>
           </Section>
 
           <Section title="Default state">
@@ -153,7 +203,7 @@ function CardSetup({ cardId, Card }) {
 
           <Section title="Hover state">
             <Row>
-              <NumberField label="Padding" value={data.hoverPadding} onChange={set('hoverPadding')} min={0} max={500} />
+              <SpacingField label="Padding" value={data.hoverPadding} onChange={set('hoverPadding')} />
               <NumberField label="Radius" value={data.hoverRadius} onChange={set('hoverRadius')} min={0} max={500} />
               <NumberField label="Button radius" value={data.buttonHoverRadius} onChange={set('buttonHoverRadius')} min={0} max={50} suffix="%" />
             </Row>

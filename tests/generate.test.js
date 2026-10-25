@@ -37,7 +37,7 @@ describe('toCssValue', () => {
 
 describe('generateCss', () => {
   it('throws on an unknown category', () => {
-    expect(() => generateCss('spacing', {})).toThrow('Unknown category');
+    expect(() => generateCss('shadow', {})).toThrow('Unknown category');
     expect(() => generateCss('toString', {})).toThrow('Unknown category');
   });
 
@@ -74,7 +74,7 @@ describe('generateCss', () => {
 
   describe('typography', () => {
     const make = (overrides = {}) => ({
-      weights: { regular: 400, bold: 700 },
+      weights: { regular: 400, semibold: 600, bold: 700 },
       headings: { h1: { fontSize: 48, lineHeight: 56, fontWeight: 700 } },
       body: { large: { fontSize: 18, lineHeight: 28 } },
       ...overrides,
@@ -88,12 +88,14 @@ describe('generateCss', () => {
       expect(css).toContain('--font-weight-h1: 700;');
       expect(css).toContain('--font-size-body-large: 18px;');
       expect(css).toContain('--font-weight-regular: 400;');
+      expect(css).toContain('--font-weight-semibold: 600;');
       expect(css).toContain('--font-weight-bold: 700;');
     });
 
     it('rejects out-of-range weights', () => {
-      expect(() => generateCss('typography', make({ weights: { regular: 50, bold: 700 } }))).toThrow('Weights');
-      expect(() => generateCss('typography', make({ weights: { regular: 400, bold: 1000 } }))).toThrow('Weights');
+      expect(() => generateCss('typography', make({ weights: { regular: 50, semibold: 600, bold: 700 } }))).toThrow('Weights');
+      expect(() => generateCss('typography', make({ weights: { regular: 400, semibold: 600, bold: 1000 } }))).toThrow('Weights');
+      expect(() => generateCss('typography', make({ weights: { regular: 400, semibold: 1000, bold: 700 } }))).toThrow('Weights');
     });
 
     it('rejects bad sizes, line heights and heading weights', () => {
@@ -111,11 +113,25 @@ describe('generateCss', () => {
   });
 
   describe('color', () => {
-    const token = (overrides) => ({ cssVar: '--color-text', hex: '#242320', ...overrides });
+    const token = (overrides) => ({ cssVar: '--color-text', hex: '#242320', dark: { hex: '#ecebe8' }, ...overrides });
     const make = (overrides) => ({ groups: [{ tokens: [token(overrides)] }] });
 
-    it('emits hex colors', () => {
-      expect(generateCss('color', make())).toBe(':root {\n  --color-text: #242320;\n}\n');
+    it('emits light colors on :root and dark colors under data-theme="dark"', () => {
+      expect(generateCss('color', make())).toBe(
+        ":root {\n  --color-text: #242320;\n}\n\n:root[data-theme='dark'] {\n  color-scheme: dark;\n\n  --color-text: #ecebe8;\n}\n",
+      );
+    });
+
+    it('emits rgba for a dark value with opacity', () => {
+      expect(generateCss('color', make({ dark: { hex: '#ffffff', opacity: 8 } }))).toContain(
+        "dark'] {\n  color-scheme: dark;\n\n  --color-text: rgba(255, 255, 255, 0.08);",
+      );
+    });
+
+    it('rejects a missing or invalid dark value', () => {
+      expect(() => generateCss('color', make({ dark: undefined }))).toThrow('missing dark value');
+      expect(() => generateCss('color', make({ dark: { hex: 'black' } }))).toThrow('(dark): invalid hex');
+      expect(() => generateCss('color', make({ dark: { hex: '#000000', opacity: 101 } }))).toThrow('(dark): opacity');
     });
 
     it('emits rgba when opacity is set', () => {

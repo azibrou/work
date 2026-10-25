@@ -1,0 +1,36 @@
+{
+  "memos": [
+    {
+      "id": "intro",
+      "name": "Intro",
+      "headline": "Designer, Engineer, hooked on hard problems, making complex things feel obvious",
+      "headlineFont": "bricolage-grotesque",
+      "headlineSize": "memo",
+      "headlineColor": "--color-text",
+      "description": "12+ years in health, finance, automotive, and e-commerce. My engineering background helps me design complex systems and work closely with engineering teams, especially where software meets physical operations. Using AI daily in my workflow and design hardware in my spare time",
+      "descriptionFont": "inter",
+      "descriptionSize": "l",
+      "descriptionColor": "--color-text-secondary",
+      "enterDuration": 1200,
+      "enterDistance": 12
+    },
+    {
+      "id": "exploring",
+      "name": "Exploring",
+      "headline": "Books, side projects and ideas I keep coming back to",
+      "headlineFont": "bricolage-grotesque",
+      "headlineSize": "memo",
+      "headlineColor": "--color-text",
+      "description": "A shelf of what I am reading and exploring outside of client work.",
+      "descriptionFont": "inter",
+      "descriptionSize": "l",
+      "descriptionColor": "--color-text-secondary",
+      "enterDuration": 1200,
+      "enterDistance": 12
+    }
+  ],
+  "pages": {
+    "doing": "intro",
+    "exploring": "exploring"
+  }
+}

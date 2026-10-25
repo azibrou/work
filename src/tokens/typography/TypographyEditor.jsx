@@ -85,6 +85,11 @@ function TypographyEditor() {
           onChange={(regular) => setData((prev) => ({ ...prev, weights: { ...prev.weights, regular } }))}
         />
         <WeightSelect
+          label="Semibold"
+          value={data.weights.semibold}
+          onChange={(semibold) => setData((prev) => ({ ...prev, weights: { ...prev.weights, semibold } }))}
+        />
+        <WeightSelect
           label="Bold"
           value={data.weights.bold}
           onChange={(bold) => setData((prev) => ({ ...prev, weights: { ...prev.weights, bold } }))}
@@ -114,6 +119,7 @@ function TypographyEditor() {
           token={token}
           samples={[
             { weight: data.weights.regular, text: `${token.label} / Regular` },
+            { weight: data.weights.semibold, text: `${token.label} / Semibold` },
             { weight: data.weights.bold, text: `${token.label} / Bold` },
           ]}
           onChange={setGroup('body', key)}

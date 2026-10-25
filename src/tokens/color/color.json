@@ -7,12 +7,26 @@
         {
           "label": "Text",
           "cssVar": "--color-text",
-          "hex": "#242320"
+          "hex": "#242320",
+          "dark": {
+            "hex": "#ecebe8"
+          }
+        },
+        {
+          "label": "Text secondary",
+          "cssVar": "--color-text-secondary",
+          "hex": "#242320",
+          "dark": {
+            "hex": "#ecebe8"
+          }
         },
         {
           "label": "Link",
           "cssVar": "--color-link",
-          "hex": "#240cad"
+          "hex": "#240cad",
+          "dark": {
+            "hex": "#a99cff"
+          }
         }
       ]
     },
@@ -23,17 +37,26 @@
         {
           "label": "Floor 0",
           "cssVar": "--color-floor-0",
-          "hex": "#ffffff"
+          "hex": "#ffffff",
+          "dark": {
+            "hex": "#141413"
+          }
         },
         {
           "label": "Floor 1",
           "cssVar": "--color-floor-1",
-          "hex": "#ffffff"
+          "hex": "#ffffff",
+          "dark": {
+            "hex": "#141413"
+          }
         },
         {
           "label": "Floor 2",
           "cssVar": "--color-floor-2",
-          "hex": "#ffffff"
+          "hex": "#ffffff",
+          "dark": {
+            "hex": "#1c1c1a"
+          }
         }
       ]
     },
@@ -44,17 +67,26 @@
         {
           "label": "Surface 1",
           "cssVar": "--color-surface-1",
-          "hex": "#f5f7f7"
+          "hex": "#f5f7f7",
+          "dark": {
+            "hex": "#1f1f1d"
+          }
         },
         {
           "label": "Surface 2",
           "cssVar": "--color-surface-2",
-          "hex": "#edf0f0"
+          "hex": "#edf0f0",
+          "dark": {
+            "hex": "#272725"
+          }
         },
         {
           "label": "Surface 3",
           "cssVar": "--color-surface-3",
-          "hex": "#e4e8e8"
+          "hex": "#e4e8e8",
+          "dark": {
+            "hex": "#30302d"
+          }
         }
       ]
     },
@@ -66,19 +98,31 @@
           "label": "Shader 1",
           "cssVar": "--color-shader-1",
           "hex": "#000000",
-          "opacity": 4
+          "opacity": 4,
+          "dark": {
+            "hex": "#ffffff",
+            "opacity": 4
+          }
         },
         {
           "label": "Shader 2",
           "cssVar": "--color-shader-2",
           "hex": "#000000",
-          "opacity": 8
+          "opacity": 8,
+          "dark": {
+            "hex": "#ffffff",
+            "opacity": 8
+          }
         },
         {
           "label": "Shader 3",
           "cssVar": "--color-shader-3",
           "hex": "#000000",
-          "opacity": 12
+          "opacity": 12,
+          "dark": {
+            "hex": "#ffffff",
+            "opacity": 12
+          }
         }
       ]
     }

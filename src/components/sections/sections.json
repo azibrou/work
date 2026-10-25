@@ -1,0 +1,41 @@
+{
+  "style": {
+    "headlineFont": "bricolage-grotesque",
+    "headlineSize": "h3",
+    "headlineColor": "--color-text",
+    "titleFont": "inter",
+    "titleSize": "h6",
+    "titleColor": "--color-text",
+    "descriptionFont": "inter",
+    "descriptionSize": "m",
+    "descriptionWeight": "regular",
+    "descriptionColor": "--color-text-secondary",
+    "paddingTop": "64",
+    "paddingBottom": "64",
+    "headlineGap": "24",
+    "projectGap": "18",
+    "titleGap": "4"
+  },
+  "sections": [
+    {
+      "id": "section-1",
+      "visible": true,
+      "headlineVisible": true,
+      "headline": "Section headline",
+      "projects": [
+        {
+          "title": "Project title",
+          "description": "Short description of the project."
+        },
+        {
+          "title": "Project title",
+          "description": "Short description of the project."
+        },
+        {
+          "title": "Project title",
+          "description": "Short description of the project."
+        }
+      ]
+    }
+  ]
+}

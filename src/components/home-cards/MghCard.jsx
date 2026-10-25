@@ -1,7 +1,10 @@
-import { useEffect, useId, useRef, useSyncExternalStore } from 'react';
+import { useEffect, useId, useRef, useState, useSyncExternalStore } from 'react';
 import HomeCardShell from './HomeCardShell';
 import cards from './cards.json';
 import { BLOB_LAYERS, blobPathAt, parseBlobPath } from './mghBlobs';
+import harvardLogo from '../../images/logos/harward.svg';
+import mghlLogo from '../../images/logos/mghl.svg';
+import bwhLogo from '../../images/logos/bwh.svg';
 
 const MOTION_QUERY = '(prefers-reduced-motion: reduce)';
 
@@ -29,10 +32,36 @@ function usePrefersReducedMotion() {
   );
 }
 
-export default function MghCard(props) {
+// The partner logos only ever show while the card's bottom edge is on screen.
+// The first look at that edge settles what else they wait for: already on
+// screen means there is no scroll to wait for, so they also need a hover;
+// off screen means the edge scrolling in is the trigger on its own.
+function usePartnerReveal(edgeRef) {
+  const [mode, setMode] = useState(null);
+  const [edgeVisible, setEdgeVisible] = useState(false);
+  const [hovered, setHovered] = useState(false);
+
+  useEffect(() => {
+    const edge = edgeRef.current;
+    if (!edge) return undefined;
+    const observer = new IntersectionObserver(([entry]) => {
+      setMode((current) => current ?? (entry.isIntersecting ? 'hover' : 'scroll'));
+      setEdgeVisible(entry.isIntersecting);
+    });
+    observer.observe(edge);
+    return () => observer.disconnect();
+  }, [edgeRef]);
+
+  const revealed = edgeVisible && (mode === 'scroll' || hovered);
+  return { revealed, setHovered };
+}
+
+export default function MghCard({ onPointerEnter, onPointerLeave, ...props }) {
   const uid = useId();
   const pathsRef = useRef([]);
+  const edgeRef = useRef(null);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const { revealed, setHovered } = usePartnerReveal(edgeRef);
 
   useEffect(() => {
     if (prefersReducedMotion) return undefined;
@@ -64,7 +93,35 @@ export default function MghCard(props) {
   }, [prefersReducedMotion]);
 
   return (
-    <HomeCardShell variant="mgh" bgDuration="150ms" {...cards.mgh} {...props}>
+    <HomeCardShell
+      variant="mgh"
+      bgDuration="150ms"
+      {...cards.mgh}
+      {...props}
+      onPointerEnter={(event) => {
+        onPointerEnter?.(event);
+        setHovered(true);
+      }}
+      onPointerLeave={(event) => {
+        onPointerLeave?.(event);
+        setHovered(false);
+      }}
+      // Keyboard focus on the card's link reveals the logos just like a hover.
+      onFocus={() => setHovered(true)}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setHovered(false);
+      }}
+      afterDescription={
+        <div className={`home-card__partners${revealed ? ' is-revealed' : ''}`}>
+          <div className="home-card__partners-row">
+            <img src={harvardLogo} alt="Harvard Medical School" height={24} />
+            <img src={mghlLogo} alt="Mass General Hospital" height={24} />
+            <img src={bwhLogo} alt="Brigham and Women's Hospital" height={24} />
+          </div>
+        </div>
+      }
+    >
+      <span ref={edgeRef} className="home-card__edge" aria-hidden="true" />
       {/* One positioned layer per exported blob, largest and faintest first.
           Each keeps its source viewBox so its gradient lands exactly where the
           artwork puts it. The `d` below is only the resting shape — the morph

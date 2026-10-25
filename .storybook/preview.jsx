@@ -1,6 +1,7 @@
 import '../src/tokens/typography/typography.css';
 import '../src/tokens/animation/animation.css';
 import '../src/tokens/color/colors.css';
+import '../src/tokens/spacing/spacing.css';
 
 /** @type { import('@storybook/react-vite').Preview } */
 const preview = {
@@ -9,6 +10,12 @@ const preview = {
       matchers: {
        color: /(background|color)$/i,
        date: /Date$/i,
+      },
+    },
+
+    options: {
+      storySort: {
+        order: ['Tokens', 'Pages', 'Components', ['Top navigation', 'Cards', '*'], 'Transitions'],
       },
     },
 

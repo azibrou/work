@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { normalizeHex } from '../../tokens/generate.js';
+import { SPACING_OPTIONS } from '../../tokens/spacing/spacing.js';
 
 const control = { padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, font: '13px Inter, sans-serif' };
 const labelText = { fontSize: 12, color: '#6b7280' };
@@ -78,6 +79,11 @@ export function SelectField({ label, value, onChange, options }) {
       </select>
     </Field>
   );
+}
+
+// Picks a spacing token from Tokens/Spacing. Stores the token name, shows its pixel value.
+export function SpacingField({ label, value, onChange }) {
+  return <SelectField label={label} value={value} onChange={onChange} options={SPACING_OPTIONS} />;
 }
 
 export function ColorField({ label, value, onChange }) {

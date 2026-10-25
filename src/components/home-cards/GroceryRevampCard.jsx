@@ -12,6 +12,7 @@ export default function GroceryRevampCard(props) {
   const handleMouseMove = (e) => {
     const card = cardRef.current;
     if (!card || !mainRef.current || !cartRef.current) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const rect = card.getBoundingClientRect();
     const moveX = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
@@ -36,8 +37,8 @@ export default function GroceryRevampCard(props) {
       {...cards.groceryRevamp}
       {...props}
     >
-      <img ref={mainRef} className="home-card__image home-card__image--main" src={groceryImage} alt="Grocery app revamp" />
-      <img ref={cartRef} className="home-card__image home-card__image--cart" src={cartImage} alt="Cart interaction" />
+      <img ref={mainRef} className="home-card__image home-card__image--main" src={groceryImage} alt="" />
+      <img ref={cartRef} className="home-card__image home-card__image--cart" src={cartImage} alt="" />
     </HomeCardShell>
   );
 }

@@ -3,6 +3,7 @@ import './button.css';
 export default function Button({
   label = 'View case study',
   size = 'm',
+  weight = 'semibold',
   radius = 12,
   hoverRadius = 50,
   opacity = 50,
@@ -19,10 +20,12 @@ export default function Button({
       style={{
         fontSize: `var(--font-size-body-${size})`,
         lineHeight: `var(--line-height-body-${size})`,
+        fontWeight: `var(--font-weight-${weight})`,
         '--button-radius': `${radius}px`,
         '--button-radius-hover': hoverRadius,
         '--button-opacity': `${opacity}%`,
-        '--button-height': `calc(var(--line-height-body-${size}) + 24px)`,
+        // Line height plus the top and bottom padding from button.css.
+        '--button-height': `calc(var(--line-height-body-${size}) + 2 * var(--space-12))`,
         ...style,
       }}
       {...rest}

@@ -1,10 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif:wght@400;500;600;700&family=Bricolage+Grotesque:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif:wght@400;500;600;700&family=Bricolage+Grotesque:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&family=Google+Sans:wght@400;500;600;700&display=swap');
 
 :root {
   --font-family-base: 'Inter', sans-serif;
   --font-family-serif: 'Noto Serif', serif;
   --font-family-bricolage: 'Bricolage Grotesque', sans-serif;
   --font-family-mono: 'Roboto Mono', monospace;
+  --font-family-google-sans: 'Google Sans', sans-serif;
+
+  --font-size-memo: 56px;
+  --line-height-memo: 64px;
+  --font-weight-memo: 600;
 
   --font-size-h1: 48px;
   --line-height-h1: 56px;
@@ -40,5 +45,6 @@
   --line-height-body-l: 28px;
 
   --font-weight-regular: 400;
+  --font-weight-semibold: 600;
   --font-weight-bold: 700;
 }

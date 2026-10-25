@@ -1,0 +1,49 @@
+{
+  "headline": "Reading",
+  "headlineFont": "inter",
+  "headlineSize": "h4",
+  "headlineColor": "--color-text",
+  "scrollStep": "cover",
+  "books": [
+    {
+      "id": "book-1",
+      "title": "Book 1"
+    },
+    {
+      "id": "book-2",
+      "title": "Book 2"
+    },
+    {
+      "id": "book-3",
+      "title": "Book 3"
+    },
+    {
+      "id": "book-4",
+      "title": "Book 4"
+    },
+    {
+      "id": "book-5",
+      "title": "Book 5"
+    },
+    {
+      "id": "book-6",
+      "title": "Book 6"
+    },
+    {
+      "id": "book-7",
+      "title": "Book 7"
+    },
+    {
+      "id": "book-8",
+      "title": "Book 8"
+    },
+    {
+      "id": "book-9",
+      "title": "Book 9"
+    },
+    {
+      "id": "book-10",
+      "title": "Book 10"
+    }
+  ]
+}

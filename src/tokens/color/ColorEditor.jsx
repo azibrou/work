@@ -30,43 +30,46 @@ function HexField({ hex, onChange }) {
   );
 }
 
-function ColorRow({ token, onChange }) {
+function Swatch({ value }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0' }}>
-      <div
-        style={{
-          width: 40,
-          height: 40,
-          borderRadius: 8,
-          border: '1px solid #d1d5db',
-          backgroundImage: 'conic-gradient(#e5e7eb 25%, #fff 0 50%, #e5e7eb 0 75%, #fff 0)',
-          backgroundSize: '10px 10px',
-          flexShrink: 0,
-          overflow: 'hidden',
-        }}
-      >
-        <div style={{ width: '100%', height: '100%', background: toCssValue(token) }} />
-      </div>
-      <div style={{ width: 130 }}>
-        <div style={{ fontWeight: 600, fontSize: 14 }}>{token.label}</div>
-        <div style={{ font: '12px ui-monospace, monospace', color: '#6b7280' }}>{token.cssVar}</div>
-      </div>
+    <div
+      style={{
+        width: 40,
+        height: 40,
+        borderRadius: 8,
+        border: '1px solid #d1d5db',
+        backgroundImage: 'conic-gradient(#e5e7eb 25%, #fff 0 50%, #e5e7eb 0 75%, #fff 0)',
+        backgroundSize: '10px 10px',
+        flexShrink: 0,
+        overflow: 'hidden',
+      }}
+    >
+      <div style={{ width: '100%', height: '100%', background: toCssValue(value) }} />
+    </div>
+  );
+}
+
+// Picker, hex and (for tokens that have one) opacity for one mode of a token.
+function ColorControls({ label, value, onChange }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      <Swatch value={value} />
       <input
         type="color"
-        aria-label={`${token.label} color picker`}
-        value={token.hex}
+        aria-label={`${label} color picker`}
+        value={value.hex}
         onChange={(e) => onChange({ hex: e.target.value })}
         style={{ width: 40, height: 32, padding: 0, border: 'none', background: 'none', cursor: 'pointer' }}
       />
-      <HexField hex={token.hex} onChange={(hex) => onChange({ hex })} />
-      {token.opacity !== undefined && (
+      <HexField hex={value.hex} onChange={(hex) => onChange({ hex })} />
+      {value.opacity !== undefined && (
         <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#4b5563' }}>
-          Opacity
           <input
             type="number"
             min={0}
             max={100}
-            value={token.opacity}
+            aria-label={`${label} opacity`}
+            value={value.opacity}
             onChange={(e) => onChange({ opacity: Math.min(100, Math.max(0, Math.round(Number(e.target.value) || 0))) })}
             style={{ width: 60, padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6 }}
           />
@@ -77,7 +80,22 @@ function ColorRow({ token, onChange }) {
   );
 }
 
-function Preview({ vars }) {
+const ROW = { display: 'grid', gridTemplateColumns: '150px 300px 300px', alignItems: 'center', gap: 16, padding: '8px 0' };
+
+function ColorRow({ token, onLight, onDark }) {
+  return (
+    <div style={ROW}>
+      <div>
+        <div style={{ fontWeight: 600, fontSize: 14 }}>{token.label}</div>
+        <div style={{ font: '12px ui-monospace, monospace', color: '#6b7280' }}>{token.cssVar}</div>
+      </div>
+      <ColorControls label={`${token.label} light`} value={token} onChange={onLight} />
+      <ColorControls label={`${token.label} dark`} value={token.dark} onChange={onDark} />
+    </div>
+  );
+}
+
+function Preview({ vars, title }) {
   const tile = {
     width: 200,
     height: 120,
@@ -96,9 +114,10 @@ function Preview({ vars }) {
         padding: 24,
         borderRadius: 12,
         border: '1px solid #e5e7eb',
+        flex: '1 1 0',
       }}
     >
-      <div style={{ fontWeight: 600, marginBottom: 4 }}>Preview</div>
+      <div style={{ fontWeight: 600, marginBottom: 4 }}>{title}</div>
       <p style={{ margin: '0 0 16px' }}>
         Body text with a{' '}
         <a href="#preview" onClick={(e) => e.preventDefault()} style={{ color: 'var(--color-link)' }}>
@@ -128,29 +147,48 @@ function Preview({ vars }) {
 
 function ColorEditor() {
   const { data, setData, dirty, apply, reset, status } = useTokenEditor('color', color);
-  const vars = Object.fromEntries(data.groups.flatMap((g) => g.tokens.map((t) => [t.cssVar, toCssValue(t)])));
+  const tokens = data.groups.flatMap((g) => g.tokens);
+  const lightVars = Object.fromEntries(tokens.map((t) => [t.cssVar, toCssValue(t)]));
+  const darkVars = Object.fromEntries(tokens.map((t) => [t.cssVar, toCssValue(t.dark)]));
 
-  const updateToken = (cssVar, patch) =>
+  const updateToken = (cssVar, update) =>
     setData((prev) => ({
       groups: prev.groups.map((g) => ({
         ...g,
-        tokens: g.tokens.map((t) => (t.cssVar === cssVar ? { ...t, ...patch } : t)),
+        tokens: g.tokens.map((t) => (t.cssVar === cssVar ? update(t) : t)),
       })),
     }));
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 32, fontFamily: "'Inter', sans-serif", color: '#111827' }}>
       <ApplyBar dirty={dirty} status={status} onApply={apply} onReset={reset} />
+      <p style={{ margin: 0, fontSize: 13, color: '#6b7280', maxWidth: 760 }}>
+        Every token has a light and a dark value. Pages use the light values; a page&apos;s look is set by its theme under
+        Pages (the Geek theme brings its own colors). Dark values are kept for a future theme.
+      </p>
       {data.groups.map((group) => (
         <section key={group.name}>
           <h3 style={{ margin: 0, fontSize: 18 }}>{group.name}</h3>
           <p style={{ margin: '2px 0 8px', fontSize: 13, color: '#6b7280' }}>{group.description}</p>
+          <div style={{ ...ROW, padding: 0, fontSize: 12, fontWeight: 600, color: '#6b7280' }}>
+            <span>Token</span>
+            <span>Light</span>
+            <span>Dark</span>
+          </div>
           {group.tokens.map((token) => (
-            <ColorRow key={token.cssVar} token={token} onChange={(patch) => updateToken(token.cssVar, patch)} />
+            <ColorRow
+              key={token.cssVar}
+              token={token}
+              onLight={(patch) => updateToken(token.cssVar, (t) => ({ ...t, ...patch }))}
+              onDark={(patch) => updateToken(token.cssVar, (t) => ({ ...t, dark: { ...t.dark, ...patch } }))}
+            />
           ))}
         </section>
       ))}
-      <Preview vars={vars} />
+      <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+        <Preview vars={lightVars} title="Light preview" />
+        <Preview vars={darkVars} title="Dark preview" />
+      </div>
       <section>
         <h3 style={{ margin: '0 0 8px', fontSize: 18 }}>CSS output</h3>
         <pre

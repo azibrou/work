@@ -1,9 +1,16 @@
 {
   "weights": {
     "regular": 400,
+    "semibold": 600,
     "bold": 700
   },
   "headings": {
+    "memo": {
+      "label": "Memo",
+      "fontSize": 56,
+      "lineHeight": 64,
+      "fontWeight": 600
+    },
     "h1": {
       "label": "H1",
       "fontSize": 48,

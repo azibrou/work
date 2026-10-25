@@ -1,8 +1,15 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { generateStories } from './generateStories.js';
 
 const tokensDir = path.resolve(import.meta.dirname, '../src/tokens');
 const cardsFile = path.resolve(import.meta.dirname, '../src/components/home-cards/cards.json');
+const memoFile = path.resolve(import.meta.dirname, '../src/components/memo/memo.json');
+const sectionsFile = path.resolve(import.meta.dirname, '../src/components/sections/sections.json');
+const srcDir = path.resolve(import.meta.dirname, '../src');
+const menuFile = path.resolve(import.meta.dirname, '../src/components/top-menu/menu.json');
+const pagesFile = path.resolve(import.meta.dirname, '../src/pages/pages.json');
+const shelfFile = path.resolve(import.meta.dirname, '../src/components/book-shelf/shelf.json');
 const logosDir = path.resolve(import.meta.dirname, '../src/images/logos');
 
 const MAX_TOKENS_BODY = 200 * 1024;
@@ -56,9 +63,29 @@ function postRoute(server, route, maxBody, handler) {
   });
 }
 
+// Stylesheets and components that may reference --space-* (the spacing folder itself is skipped).
+async function readSourceFiles() {
+  const entries = await fs.readdir(srcDir, { recursive: true });
+  const files = {};
+  for (const rel of entries) {
+    if (!/\.(css|jsx)$/.test(rel) || rel.startsWith(path.join('tokens', 'spacing'))) continue;
+    files[path.join(srcDir, rel)] = await fs.readFile(path.join(srcDir, rel), 'utf8');
+  }
+  return files;
+}
+
 async function saveTokens({ category, data }, server) {
   const { categories, generateCss } = await loadFresh(server, '/src/tokens/generate.js');
   const css = generateCss(category, data);
+  if (category === 'spacing') {
+    const { findSpacingUses, assertSpacingKept } = await loadFresh(server, '/src/tokens/spacing/usage.js');
+    const uses = findSpacingUses({
+      cards: JSON.parse(await fs.readFile(cardsFile, 'utf8')),
+      sections: JSON.parse(await fs.readFile(sectionsFile, 'utf8')),
+      files: await readSourceFiles(),
+    });
+    assertSpacingKept(data.tokens, uses);
+  }
   const target = categories[category];
   await fs.writeFile(path.join(tokensDir, target.json), JSON.stringify(data, null, 2) + '\n');
   await fs.writeFile(path.join(tokensDir, target.css), css);
@@ -100,7 +127,51 @@ async function saveCard({ cardId, config, logoUpload }, server) {
   return { ok: true, config: clean };
 }
 
-// Dev-only: lets the Storybook setup pages write token files and card configs into the project.
+async function saveMemo({ memos }, server) {
+  const { validateMemoLibrary } = await loadFresh(server, '/src/components/memo/memoSchema.js');
+  const clean = validateMemoLibrary(memos ?? {});
+  await fs.writeFile(memoFile, JSON.stringify(clean, null, 2) + '\n');
+  return { ok: true, memos: clean };
+}
+
+async function saveShelf({ shelf }, server) {
+  const { validateShelf } = await loadFresh(server, '/src/components/book-shelf/shelfSchema.js');
+  const clean = validateShelf(shelf ?? {});
+  await fs.writeFile(shelfFile, JSON.stringify(clean, null, 2) + '\n');
+  return { ok: true, shelf: clean };
+}
+
+async function saveSections({ sections }, server) {
+  const { validateSections } = await loadFresh(server, '/src/components/sections/sectionsSchema.js');
+  const clean = validateSections(sections ?? {});
+  await fs.writeFile(sectionsFile, JSON.stringify(clean, null, 2) + '\n');
+  return { ok: true, sections: clean };
+}
+
+// Pages and Components/Cards take their names from the menu, so their story files follow it.
+async function regenerateStories(server) {
+  const { PAGE_CONTENT } = await loadFresh(server, '/src/pages/pageContent.js');
+  generateStories({ content: PAGE_CONTENT });
+}
+
+async function saveMenu({ menu }, server) {
+  const { validateMenu } = await loadFresh(server, '/src/components/top-menu/menuSchema.js');
+  const pages = JSON.parse(await fs.readFile(pagesFile, 'utf8'));
+  const clean = validateMenu(menu ?? {}, pages.pages.map((p) => p.id));
+  await fs.writeFile(menuFile, JSON.stringify(clean, null, 2) + '\n');
+  await regenerateStories(server);
+  return { ok: true, menu: clean };
+}
+
+async function savePages({ pages }, server) {
+  const { validatePages } = await loadFresh(server, '/src/pages/pagesSchema.js');
+  const clean = validatePages(pages ?? {});
+  await fs.writeFile(pagesFile, JSON.stringify(clean, null, 2) + '\n');
+  await regenerateStories(server);
+  return { ok: true, pages: clean };
+}
+
+// Dev-only: lets the Storybook setup pages write token files, card configs, the memos, the top navigation, the pages, the sections and the book shelf into the project.
 export default function tokenSavePlugin() {
   return {
     name: 'token-save',
@@ -108,6 +179,11 @@ export default function tokenSavePlugin() {
     configureServer(server) {
       postRoute(server, '/__tokens/save', MAX_TOKENS_BODY, saveTokens);
       postRoute(server, '/__cards/save', MAX_CARDS_BODY, saveCard);
+      postRoute(server, '/__memo/save', MAX_TOKENS_BODY, saveMemo);
+      postRoute(server, '/__menu/save', MAX_TOKENS_BODY, saveMenu);
+      postRoute(server, '/__pages/save', MAX_TOKENS_BODY, savePages);
+      postRoute(server, '/__sections/save', MAX_TOKENS_BODY, saveSections);
+      postRoute(server, '/__shelf/save', MAX_TOKENS_BODY, saveShelf);
     },
   };
 }

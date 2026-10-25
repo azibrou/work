@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "id": "doing",
+      "label": "Doing",
+      "page": "doing",
+      "transition": "default"
+    },
+    {
+      "id": "exploring",
+      "label": "Exploring",
+      "page": "exploring",
+      "transition": "one-bit"
+    }
+  ]
+}

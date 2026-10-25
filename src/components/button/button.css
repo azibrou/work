@@ -1,6 +1,6 @@
 .button {
   display: inline-block;
-  padding: 12px 24px;
+  padding: var(--space-12) var(--space-24);
   color: var(--color-text);
   /* Tinted against the surface behind it rather than against transparency, so
      the fill is fully opaque — nothing showing through, including a card's
@@ -11,7 +11,7 @@
     var(--card-surface, var(--color-floor-0))
   );
   font-family: inherit;
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   text-decoration: none;
   border: 0;
   cursor: pointer;

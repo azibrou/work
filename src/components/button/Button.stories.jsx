@@ -4,10 +4,11 @@ const meta = {
   title: 'Components/Button',
   component: Button,
   parameters: { layout: 'padded' },
-  args: { label: 'View case study', size: 'm', radius: 12, hoverRadius: 50, opacity: 50, hovered: false },
+  args: { label: 'View case study', size: 'm', weight: 'semibold', radius: 12, hoverRadius: 50, opacity: 50, hovered: false },
   argTypes: {
     label: { control: 'text' },
     size: { control: 'inline-radio', options: ['s', 'm', 'l'], description: 'Body text size token' },
+    weight: { control: 'inline-radio', options: ['regular', 'semibold', 'bold'], description: 'Font weight token' },
     radius: { control: { type: 'number', min: 0, max: 500 }, description: 'Default radius, px' },
     hoverRadius: { control: { type: 'range', min: 0, max: 50, step: 1 }, description: 'Hover radius, % of height (50 = pill)' },
     opacity: { control: { type: 'range', min: 0, max: 100, step: 1 }, description: 'Default background opacity, % (hover is always 100)' },

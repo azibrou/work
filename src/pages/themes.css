@@ -1,0 +1,45 @@
+/* Page themes (see themes.js). The app sets data-page-theme on <html> from the
+   active page's theme. Default has no rules: it is the tokens as they are. */
+
+/* Geek: white on black, monospace "system" look. Overrides the colour and font
+   tokens, so page components don't change. */
+:root[data-page-theme='geek'] {
+  color-scheme: dark;
+  --color-text: #ffffff;
+  --color-text-secondary: #ffffff;
+  --color-link: #ffffff;
+  --color-floor-0: #000000;
+  --color-floor-1: #000000;
+  --color-floor-2: #1f1f1f;
+  --color-surface-1: #000000;
+  --color-surface-2: #0d0d0d;
+  --color-surface-3: #1a1a1a;
+  --font-family-base: var(--font-family-mono);
+  background: #000;
+}
+
+:root[data-page-theme='geek'] body {
+  background: #000;
+  color: #fff;
+}
+
+/* Components set fonts inline, so the takeover needs !important. */
+:root[data-page-theme='geek'] main,
+:root[data-page-theme='geek'] main *,
+:root[data-page-theme='geek'] .top-menu-item {
+  font-family: var(--font-family-mono) !important;
+}
+
+:root[data-page-theme='geek'] .top-menu-item {
+  color: #a3a3a3;
+}
+
+:root[data-page-theme='geek'] .top-menu-item:hover {
+  color: #fff;
+}
+
+/* Classic Mac selection: the active item is inverted. */
+:root[data-page-theme='geek'] .top-menu-item.is-active {
+  color: #000;
+  background: #fff;
+}

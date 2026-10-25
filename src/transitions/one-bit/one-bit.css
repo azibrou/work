@@ -1,0 +1,26 @@
+/* The page look (white on black etc.) is a page theme now: see src/pages/themes.css. */
+
+/* Destination entrance: hidden while the dissolve plays, then revealed top to
+   bottom in line-sized steps, like a terminal printing. */
+[data-onebit-entrance='pending'] {
+  visibility: hidden;
+}
+
+[data-onebit-entrance='play'] {
+  animation: onebit-entrance var(--onebit-entrance-duration, 700ms) steps(var(--onebit-entrance-steps, 14), end) backwards;
+}
+
+@keyframes onebit-entrance {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-onebit-entrance='play'] {
+    animation: none;
+  }
+}

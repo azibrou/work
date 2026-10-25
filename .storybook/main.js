@@ -1,4 +1,9 @@
 import tokenSavePlugin from './tokenSavePlugin.js';
+import { generateStories } from './generateStories.js';
+
+// Pages and Components/Cards are named after the top navigation, so their
+// story files are written before Storybook reads the stories.
+generateStories();
 
 /** @type { import('@storybook/react-vite').StorybookConfig } */
 const config = {

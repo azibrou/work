@@ -5,10 +5,20 @@
   box-sizing: border-box;
 }
 
+/* The card itself is a square hover target; the surface inside it is what
+   rounds and clips. If the hover target rounded, its growing corner would push
+   the pointer outside it, drop the hover, shrink back, and loop. Grid makes the
+   surface fill the card, and still lets the surface's content grow it on
+   narrow screens. */
 .home-card {
   position: relative;
-  overflow: hidden;
+  display: grid;
   font-family: var(--font-family-base);
+}
+
+.home-card__surface {
+  position: relative;
+  overflow: hidden;
   background: var(--card-bg);
   border-radius: var(--card-radius);
   transition:
@@ -16,7 +26,7 @@
     background var(--duration-homecardout) var(--easing-homecardout);
 }
 
-.home-card:hover {
+.home-card:hover .home-card__surface {
   background: var(--card-bg-hover);
   border-radius: var(--card-radius-hover);
   transition:
@@ -40,10 +50,40 @@
   transition: padding var(--duration-homecardin) var(--easing-homecardin);
 }
 
+/* Reflow (WCAG 1.4.10): cards never get wider than the column they're in. */
+.home-card {
+  max-width: 100%;
+}
+
+/* On narrow screens the text wraps onto more lines, so the card grows taller
+   than its set height instead of cutting the text off, and the padding shrinks
+   so the text keeps a readable width. !important beats the inline height. */
+@media (max-width: 640px) {
+  .home-card {
+    height: auto !important;
+    min-height: var(--card-height);
+  }
+
+  .home-card__details,
+  .home-card:hover .home-card__details {
+    position: relative;
+    min-height: var(--card-height);
+    padding: var(--space-24);
+  }
+}
+
+.home-card__logo {
+  flex: none;
+  margin-bottom: var(--card-logo-gap);
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
 .home-card__text {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--card-text-gap);
   flex: 1;
   min-height: 0;
   max-width: 100%;
@@ -52,7 +92,7 @@
 
 .home-card__button {
   flex: none;
-  margin-top: 24px;
+  margin-top: var(--card-button-gap);
   pointer-events: auto;
 }
 
@@ -73,18 +113,30 @@
 }
 
 /* Robot delivery */
+/* Kept to the upper part of the card so the bottom text stays readable.
+   On hover the robot rides forward (down-left, the way it faces) and
+   eases to a stop above the text. */
 .home-card--robot .home-card__image {
   right: -30%;
-  top: 40%;
+  top: 0;
   height: 100%;
   width: auto;
-  transform: translateY(-40%) scale(2);
-  transform-origin: center right;
-  transition: transform var(--duration-medium) cubic-bezier(0, 0, 0.25, 1);
+  transform: translate(11%, -74%) scale(1.82);
+  transform-origin: top right;
+  will-change: transform;
+  transition: transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .home-card--robot:hover .home-card__image {
-  transform: translateY(-35%) scale(2.2);
+  transform: translate(-7%, -63%) scale(1.82);
+  transition: transform 1600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-card--robot .home-card__image,
+  .home-card--robot:hover .home-card__image {
+    transition: none;
+  }
 }
 
 /* MGH — the exported blob artwork, one inline <svg> per layer.
@@ -114,6 +166,77 @@
 /* Text keeps its own layer above the artwork and never moves with it. */
 .home-card--mgh .home-card__details {
   z-index: 1;
+}
+
+.home-card--mgh .home-card__text p {
+  padding-top: var(--space-8);
+}
+
+/* Partner logos between the description and the button. Collapsed, the row
+   has no height and its negative margin cancels the text column's gap, so the
+   description and button sit exactly where they would without it. Revealed,
+   the row opens to its 24px logos, a text gap plus 8px below the description and
+   8px more above the button, pushing the two apart, and the logos pop in. */
+.home-card--mgh .home-card__partners {
+  display: grid;
+  grid-template-rows: 0fr;
+  margin-top: calc(-1 * var(--card-text-gap));
+  transition:
+    grid-template-rows var(--duration-quick) var(--easing-quick),
+    margin var(--duration-quick) var(--easing-quick);
+}
+
+.home-card--mgh .home-card__partners.is-revealed {
+  grid-template-rows: 1fr;
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-8);
+}
+
+.home-card--mgh .home-card__partners-row {
+  display: flex;
+  flex-wrap: wrap; /* narrow cards put logos on a second line rather than cutting them off */
+  gap: var(--space-16);
+  min-height: 0;
+}
+
+.home-card--mgh .home-card__partners-row img {
+  flex: none;
+  width: auto;
+  height: 24px;
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity var(--duration-quick) var(--easing-quick),
+    transform var(--duration-quick) cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.home-card--mgh .home-card__partners.is-revealed img {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.home-card--mgh .home-card__partners.is-revealed img:nth-child(2) {
+  transition-delay: calc(var(--duration-quick) / 2);
+}
+
+.home-card--mgh .home-card__partners.is-revealed img:nth-child(3) {
+  transition-delay: var(--duration-quick);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-card--mgh .home-card__partners,
+  .home-card--mgh .home-card__partners-row img {
+    transition: none;
+  }
+}
+
+/* One-pixel marker on the card's bottom edge, watched to tell whether that
+   edge has been scrolled into view. */
+.home-card__edge {
+  position: absolute;
+  inset: auto 0 0;
+  height: 1px;
+  pointer-events: none;
 }
 
 .home-card--mgh .home-card__blob--a {
@@ -201,7 +324,36 @@
   transition: transform 25s ease-out;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .home-card--fitbit-engagement:hover .home-card__image {
+    transform: none;
+  }
+}
+
 /* Yandex */
+/* Equalizer behind the artwork. Bar heights are driven from YandexCard and
+   rest flat at scaleY(0) until the record starts to spin. */
+.home-card--yandex .home-card__eq {
+  position: absolute;
+  z-index: 0;
+  inset: auto 0 0;
+  height: 40%;
+  display: flex;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.home-card--yandex .home-card__eq-bar {
+  flex: none;
+  width: 2px;
+  height: 100%;
+  border-radius: 1px 1px 0 0;
+  background: rgba(255, 255, 255, 0.25);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  will-change: transform;
+}
+
 .home-card--yandex .home-card__image {
   right: -200px;
   top: -40px;
@@ -214,15 +366,20 @@
   z-index: 1;
   pointer-events: none;
   object-fit: contain;
-  right: 125px;
-  top: 156px;
-  width: 55px;
-  height: 55px;
-  transition: transform 15000ms ease-out;
-}
-
-.home-card--yandex:hover .home-card__disc {
-  transform: rotate(720deg);
+  /* Sits over the record label in yandex.png at the default 454px card height.
+     Rotation is driven from YandexCard so it can coast to a stop. */
+  right: 156px;
+  top: 175px;
+  /* The 64px disc covers the label printed on the screenshot. The cover
+     inside it is a real LP's proportion (4" label on a 12" record, about a
+     third of the diameter) and the padding is vinyl showing around it. */
+  box-sizing: border-box;
+  width: 64px;
+  height: 64px;
+  padding: 5px;
+  background: #121415;
+  border-radius: 50%;
+  will-change: transform;
 }
 
 /* Grocery revamp */
@@ -241,4 +398,24 @@
   right: 40%;
   top: 44%;
   height: 60%;
+}
+
+/* Plain white cards (Exploring page). They stay white on any page theme, so
+   they keep the light text color even on dark and 1-bit pages, and the button
+   gets a light-grey fill so it shows on the white card. */
+.home-card--plain {
+  --color-text: #242320;
+}
+
+.home-card--plain .home-card__surface {
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08); /* edge on a white floor, like Shader 2 */
+}
+
+.home-card--plain .button {
+  background: #f5f7f7; /* Surface 1 */
+}
+
+.home-card--plain .button:hover,
+.home-card--plain:hover .button {
+  background: #edf0f0; /* Surface 2 */
 }

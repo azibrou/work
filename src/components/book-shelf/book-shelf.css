@@ -1,0 +1,89 @@
+/* Headline font, size and color come from shelf.json (inline styles in BookShelf.jsx). */
+.book-shelf {
+    /* As wide as the project tiles (two 604px cards + gap), never wider than the page.
+       inline-size containment stops the long row of covers from widening the page. */
+    width: calc(2 * 604px + var(--space-8));
+    max-width: 100%;
+    contain: inline-size;
+    margin: 0 auto;
+}
+
+.book-shelf__headline {
+    margin-bottom: var(--space-16);
+}
+
+.book-shelf__viewport {
+    position: relative;
+}
+
+.book-shelf__track {
+    display: flex;
+    gap: var(--space-12);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none; /* the arrow buttons, trackpads, touch and arrow keys scroll it */
+    border-radius: 16px; /* keeps the focus ring in line with the covers */
+}
+
+.book-shelf__track::-webkit-scrollbar {
+    display: none;
+}
+
+.book-cover {
+    position: relative;
+    flex: 0 0 auto;
+    height: 320px;
+    aspect-ratio: 1 / 1.618;
+    border-radius: 16px;
+    background: #ffffff;
+    /* A shader edge so white covers stay visible on a white floor. */
+    box-shadow: inset 0 0 0 1px var(--color-shader-2);
+    scroll-snap-align: start;
+}
+
+/* Prev/next buttons sit over the row's edges, centred on the covers. */
+.book-shelf__arrow {
+    position: absolute;
+    top: 50%;
+    display: grid;
+    place-items: center;
+    width: 44px; /* WCAG 2.5.5 target size */
+    height: 44px;
+    padding: 0;
+    color: var(--color-text);
+    background: var(--color-floor-0);
+    border: 0;
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 1px var(--color-shader-2),
+        0 2px 8px var(--color-shader-2);
+    cursor: pointer;
+    transform: translateY(-50%);
+}
+
+.book-shelf__arrow:hover {
+    background: var(--color-surface-1);
+}
+
+.book-shelf__arrow--prev {
+    left: var(--space-12);
+}
+
+.book-shelf__arrow--next {
+    right: var(--space-12);
+}
+
+/* The book title, for screen readers only. */
+.book-shelf__sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}

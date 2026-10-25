@@ -1,0 +1,14 @@
+{
+  "pages": [
+    {
+      "id": "doing",
+      "name": "Doing",
+      "theme": "default"
+    },
+    {
+      "id": "exploring",
+      "name": "Exploring",
+      "theme": "geek"
+    }
+  ]
+}

@@ -132,7 +132,7 @@ const SWELL = [
   { lobes: 1, pace: 0.27, weight: 1, atAngle: 0, atTime: 0 },
   { lobes: 2, pace: 0.22 * Math.SQRT2, weight: 0.8, atAngle: 1.1, atTime: 2.2 },
   { lobes: 3, pace: 0.085 * Math.PI, weight: 0.55, atAngle: 2.7, atTime: 0.9 },
-  { lobes: 5, pace: 0.14 * Math.SQRT2, weight: 0.3, atAngle: 0.4, atTime: 3.6 },
+  { lobes: 5, pace: 0.14 * Math.SQRT2, weight: 0.15, atAngle: 0.4, atTime: 3.6 },
 ];
 
 // Tangential terms: these slide bends around the outline, so a hollow does not
@@ -145,8 +145,8 @@ const SLIDE = [
 // How the morph budget is split. Radial swelling closes the gap to the next
 // contour; sliding and rebending do not, so they carry most of the movement.
 const RADIAL_SHARE = 0.4;
-const TANGENT_SHARE = 1.2;
-const REBEND_SHARE = 4;
+const TANGENT_SHARE = 1.8;
+const REBEND_SHARE = 6;
 
 function fieldAt(bands, angle, t, seed) {
   let sum = 0;

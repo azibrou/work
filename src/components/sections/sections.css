@@ -1,0 +1,30 @@
+/* Fonts, sizes and colors come from sections.json (inline styles in ProjectSections.jsx);
+   the spacing variables below point at tokens picked in Components/Cards/Doing → Sections. */
+.project-sections {
+    /* Hug the tiles: long text wraps instead of widening the page container. */
+    contain: inline-size;
+}
+
+.project-section {
+    padding: var(--sections-padding-top) 0 var(--sections-padding-bottom);
+}
+
+.project-section__headline {
+    margin: 0 0 var(--sections-headline-gap);
+    white-space: pre-line;
+}
+
+.project-section__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sections-project-gap);
+}
+
+.project-section__project h3 {
+    margin: 0 0 var(--sections-title-gap);
+}
+
+.project-section__project p {
+    margin: 0;
+    white-space: pre-line;
+}

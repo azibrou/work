@@ -1,54 +1,52 @@
-import { useState } from 'react'
-import MghCard from './components/home-cards/MghCard.jsx'
-import RobotDeliveryCard from './components/home-cards/RobotDeliveryCard.jsx'
-import FitbitRewardsCard from './components/home-cards/FitbitRewardsCard.jsx'
-import FitbitEngagementCard from './components/home-cards/FitbitEngagementCard.jsx'
-import YandexCard from './components/home-cards/YandexCard.jsx'
-import GroceryRevampCard from './components/home-cards/GroceryRevampCard.jsx'
+import { useImperativeHandle, useLayoutEffect, useRef } from 'react'
+import TopMenu from './components/top-menu/TopMenu.jsx'
+import menu from './components/top-menu/menu.json'
+import pagesConfig from './pages/pages.json'
+import Page from './pages/Page.jsx'
+import { themeOf } from './pages/pagesSchema.js'
+import { applyTheme } from './pages/themes.js'
+import { usePageTransitions } from './transitions/usePageTransitions.js'
+import './pages/themes.css'
 
-const SECTIONS = ['Doing', 'Writing', 'Exploring']
+// Each top-navigation item opens a page (item.page) with a transition
+// (item.transition), both set in menu.json. Each page has its own theme in
+// pages.json. renderPage, pages, transitionOptions and controllerRef let
+// Storybook preview them.
+function App({
+  items = menu.items,
+  pages = pagesConfig,
+  initialId,
+  transitionOptions,
+  syncHistory = true,
+  renderPage = (pageId) => <Page id={pageId} />,
+  controllerRef,
+}) {
+  const mainRef = useRef(null)
+  const { activeId, navigate, announcement, mainProps } = usePageTransitions({
+    items,
+    initialId,
+    options: transitionOptions,
+    syncHistory,
+    mainRef,
+  })
+  useImperativeHandle(controllerRef, () => ({ navigate, activeId }), [navigate, activeId])
 
-function App() {
-  const [section, setSection] = useState('Doing')
+  const pageId = items.find((item) => item.id === activeId)?.page
+  // Layout effect, so the theme flips in the same commit as the page swap
+  // (under the transition overlay).
+  const theme = themeOf(pages, pageId)
+  useLayoutEffect(() => applyTheme(theme), [theme])
+  useLayoutEffect(() => () => applyTheme(null), [])
 
   return (
     <div className="main-container">
-      <nav className="top-menu" aria-label="Sections">
-        {SECTIONS.map((name) => (
-          <button
-            key={name}
-            type="button"
-            className={`top-menu-item${name === section ? ' is-active' : ''}`}
-            aria-current={name === section ? 'page' : undefined}
-            onClick={() => setSection(name)}
-          >
-            {name}
-          </button>
-        ))}
-      </nav>
-      <div className="memo">
-        <h1>About me</h1>
-        <p className="memo-intro">
-          12+ years in health, finance, automotive, and e-commerce. My engineering background
-          helps me design complex systems and work closely with engineering teams, especially
-          where software meets physical operations. Using AI daily in my workflow and design
-          hardware in my spare time
-        </p>
-      </div>
-      {section === 'Doing' && (
-        <div className="tiles">
-          <MghCard />
-          <div className="stack">
-            <RobotDeliveryCard />
-            <FitbitRewardsCard />
-          </div>
-          <FitbitEngagementCard />
-          <YandexCard />
-          <div className="tiles-wide">
-            <GroceryRevampCard />
-          </div>
-        </div>
-      )}
+      <TopMenu items={items} active={activeId} onChange={(id) => navigate(id)} />
+      <main ref={mainRef} id="main-content" {...mainProps}>
+        {renderPage(pageId)}
+      </main>
+      <p className="visually-hidden" role="status">
+        {announcement}
+      </p>
     </div>
   )
 }

@@ -1,0 +1,54 @@
+/* Font face, size and color come from memo.json (inline styles in Memo.jsx). */
+.memo {
+    width: 70%; /* of the page container */
+    /* The container hugs its content; this keeps a long headline from widening it,
+       so the tiles set the width and the memo text wraps inside 70% of it. */
+    contain: inline-size;
+    box-sizing: border-box;
+    margin: 0 auto var(--space-32); /* center and add spacing below */
+    /* 132px bottom has no spacing token; it is two 64s plus a 4. */
+    padding: var(--space-40) 0 calc(2 * var(--space-64) + var(--space-4));
+    text-align: center;
+}
+
+/* Enter: slides down into place each time the memo comes into view. Distance and
+   duration come from memo.json (Memos in Storybook); easing is ease-out.
+   The transition is only on .is-in, so the reset after it leaves the screen is instant. */
+.memo__content {
+    transform: translateY(calc(-1 * var(--memo-enter-distance)));
+}
+
+.memo__content.is-in {
+    transform: none;
+    transition: transform var(--memo-enter-duration) cubic-bezier(0, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .memo__content {
+        transform: none;
+    }
+}
+
+.memo h1 {
+    font-size: var(--memo-headline-size);
+    line-height: var(--memo-headline-line);
+    white-space: pre-line; /* line breaks typed in the headline show on the page */
+}
+
+/* Phones: full width, and the headline scales down so long words fit (WCAG 1.4.10). */
+@media (max-width: 640px) {
+    .memo {
+        width: 100%;
+        padding-bottom: var(--space-64);
+    }
+
+    .memo h1 {
+        font-size: min(var(--memo-headline-size), 10vw);
+        line-height: 1.2;
+    }
+}
+
+.memo-intro {
+    margin: var(--space-16) auto 0;
+    font-weight: 400;
+}

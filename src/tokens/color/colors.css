@@ -1,5 +1,6 @@
 :root {
   --color-text: #242320;
+  --color-text-secondary: #242320;
   --color-link: #240cad;
 
   --color-floor-0: #ffffff;
@@ -13,4 +14,24 @@
   --color-shader-1: rgba(0, 0, 0, 0.04);
   --color-shader-2: rgba(0, 0, 0, 0.08);
   --color-shader-3: rgba(0, 0, 0, 0.12);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-text: #ecebe8;
+  --color-text-secondary: #ecebe8;
+  --color-link: #a99cff;
+
+  --color-floor-0: #141413;
+  --color-floor-1: #141413;
+  --color-floor-2: #1c1c1a;
+
+  --color-surface-1: #1f1f1d;
+  --color-surface-2: #272725;
+  --color-surface-3: #30302d;
+
+  --color-shader-1: rgba(255, 255, 255, 0.04);
+  --color-shader-2: rgba(255, 255, 255, 0.08);
+  --color-shader-3: rgba(255, 255, 255, 0.12);
 }

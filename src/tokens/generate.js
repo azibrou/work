@@ -9,11 +9,12 @@ export const EASINGS = {
 };
 
 const FONT_IMPORT =
-  "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif:wght@400;500;600;700&family=Bricolage+Grotesque:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap');";
+  "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif:wght@400;500;600;700&family=Bricolage+Grotesque:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&family=Google+Sans:wght@400;500;600;700&display=swap');";
 const FONT_FAMILY = "'Inter', sans-serif";
 const FONT_FAMILY_SERIF = "'Noto Serif', serif";
 const FONT_FAMILY_BRICOLAGE = "'Bricolage Grotesque', sans-serif";
 const FONT_FAMILY_MONO = "'Roboto Mono', monospace";
+const FONT_FAMILY_GOOGLE_SANS = "'Google Sans', sans-serif";
 
 export function normalizeHex(input) {
   const value = input.trim().replace(/^#?/, '#').toLowerCase();
@@ -51,7 +52,10 @@ function animationCss(data) {
 
 function typographyCss(data) {
   const { weights, headings, body } = data;
-  assert(inRange(weights.regular, 100, 900) && inRange(weights.bold, 100, 900), 'Weights must be 100-900');
+  assert(
+    [weights.regular, weights.semibold, weights.bold].every((w) => inRange(w, 100, 900)),
+    'Weights must be 100-900',
+  );
 
   const size = (name, t) => {
     assert(/^[a-z0-9-]+$/.test(name), `Invalid style "${name}"`);
@@ -74,33 +78,58 @@ function typographyCss(data) {
     `  --font-family-serif: ${FONT_FAMILY_SERIF};`,
     `  --font-family-bricolage: ${FONT_FAMILY_BRICOLAGE};`,
     `  --font-family-mono: ${FONT_FAMILY_MONO};`,
+    `  --font-family-google-sans: ${FONT_FAMILY_GOOGLE_SANS};`,
     '',
     headingLines.join('\n\n'),
     '',
     bodyLines.join('\n\n'),
     '',
     `  --font-weight-regular: ${weights.regular};`,
+    `  --font-weight-semibold: ${weights.semibold};`,
     `  --font-weight-bold: ${weights.bold};`,
     '}',
     '',
   ].join('\n');
 }
 
+function assertColor(cssVar, { hex, opacity }, mode = '') {
+  assert(typeof hex === 'string' && normalizeHex(hex) === hex, `${cssVar}${mode}: invalid hex "${hex}"`);
+  assert(opacity === undefined || inRange(opacity, 0, 100), `${cssVar}${mode}: opacity must be 0-100`);
+}
+
+// Light values go on :root. Each token also has a `dark` value, written under
+// :root[data-theme="dark"] for a future theme; no page sets it today (page themes: src/pages/themes.js).
 function colorCss(data) {
-  const blocks = data.groups.map((group) =>
-    group.tokens
-      .map((t) => {
-        assert(/^--color-[a-z0-9-]+$/.test(t.cssVar), `Invalid color variable "${t.cssVar}"`);
-        assert(normalizeHex(t.hex) === t.hex, `${t.cssVar}: invalid hex "${t.hex}"`);
-        assert(t.opacity === undefined || inRange(t.opacity, 0, 100), `${t.cssVar}: opacity must be 0-100`);
-        return `  ${t.cssVar}: ${toCssValue(t)};`;
-      })
-      .join('\n'),
-  );
-  return `:root {\n${blocks.join('\n\n')}\n}\n`;
+  const lines = (pick) =>
+    data.groups.map((group) => group.tokens.map((t) => `  ${t.cssVar}: ${toCssValue(pick(t))};`).join('\n')).join('\n\n');
+
+  for (const t of data.groups.flatMap((g) => g.tokens)) {
+    assert(/^--color-[a-z0-9-]+$/.test(t.cssVar), `Invalid color variable "${t.cssVar}"`);
+    assertColor(t.cssVar, t);
+    assert(t.dark && typeof t.dark === 'object', `${t.cssVar}: missing dark value`);
+    assertColor(t.cssVar, t.dark, ' (dark)');
+  }
+  return `:root {\n${lines((t) => t)}\n}\n\n:root[data-theme='dark'] {\n  color-scheme: dark;\n\n${lines((t) => t.dark)}\n}\n`;
+}
+
+export const SPACING_NAME = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+export const MAX_SPACING = 1000;
+
+function spacingCss(data) {
+  assert(Array.isArray(data.tokens) && data.tokens.length > 0, 'Spacing needs at least one token');
+  const seen = new Set();
+  const lines = data.tokens.map((t) => {
+    assert(typeof t.name === 'string' && SPACING_NAME.test(t.name), `Invalid spacing name "${t.name}"`);
+    assert(!seen.has(t.name), `Two spacing tokens are called "${t.name}"`);
+    assert(inRange(t.value, 0, MAX_SPACING), `${t.name}: value must be a whole number 0-${MAX_SPACING}`);
+    seen.add(t.name);
+    return `  --space-${t.name}: ${t.value}px;`;
+  });
+  return `:root {\n${lines.join('\n')}\n}\n`;
 }
 
 export const categories = {
+  spacing: { json: 'spacing/spacing.json', css: 'spacing/spacing.css', toCss: spacingCss },
   animation: { json: 'animation/animation.json', css: 'animation/animation.css', toCss: animationCss },
   typography: { json: 'typography/typography.json', css: 'typography/typography.css', toCss: typographyCss },
   color: { json: 'color/color.json', css: 'color/colors.css', toCss: colorCss },
